@@ -6,21 +6,35 @@ h2. Introduction
 
 Lorem ipsum.
 
-h2. Installation
+h2. Generating a new gem
 
-Add GemSuit as gem dependency in your @gemspec@ file:
-
-<pre>
-  s.add_dependency "gem_suit"
-</pre>
-
-Require GemSuit in your gem (e.g. in @libs/rich_cms.rb@ for the gem Rich-CMS)
+Run the following command in your console if you haven't installed GemSuit yet:
 
 <pre>
-  require "gem_suit"
+  gem install "gem_suit"
 </pre>
 
-h2. How to use
+Run the following command to create a gem with Bundler and the GemSuit test suite:
+
+<pre>
+  suit tailor your_gem_name
+</pre>
+
+h2. Installation (for an already created gem)
+
+Run the following command in your console if you haven't installed GemSuit yet:
+
+<pre>
+  gem install "gem_suit"
+</pre>
+
+Run the following command within your gem directory (e.g. in @Gems/rich_cms@ for the gem Rich-CMS)
+
+<pre>
+  suit up
+</pre>
+
+h2. And now what?
 
 Lorem ipsum.
 
