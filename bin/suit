@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+def tailor
+  # Generate a Bundler gem and provide it with Rails 2 and 3 test suite
+end
+
+def up
+  # Provide existing with Rails 2 and 3 test suite
+end
