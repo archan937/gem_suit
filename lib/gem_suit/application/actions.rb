@@ -52,6 +52,14 @@ module GemSuit
           # Implement in subclass
         end
 
+        def locals_for_template
+          # Implement in subclass
+        end
+
+        def locals
+          locals_for_template @relative_path if @relative_path
+        end
+
         def prepare_database
           return if @db_prepared
           if @ran_generator
@@ -146,12 +154,14 @@ module GemSuit
             root = Pathname.new File.expand_path(dir, templates_path)
             Dir[File.expand_path(string, root.realpath)].each do |file|
               next if File.directory? file
-              relative_path = Pathname.new(file).relative_path_from(root).to_s
-              new_files << relative_path unless new_file?(expand_path(relative_path)) || File.exists?(stashed(relative_path))
-              log :creating, relative_path
-              template file,
-                       expand_path(relative_path),
-                       {:mysql_password => mysql_password}.merge(config_for_template(expand_path(relative_path)) || {})
+              begin
+                @relative_path = Pathname.new(file).relative_path_from(root).to_s
+                new_files << @relative_path unless new_file?(expand_path(@relative_path)) || File.exists?(stashed(@relative_path))
+                log :creating, @relative_path
+                template file, expand_path(@relative_path)
+              ensure
+                @relative_path = nil
+              end
             end
           end
 
@@ -162,8 +172,15 @@ module GemSuit
           end
         end
 
-        def config_for_template(path)
-          # Implement in subclass
+        def generate(*args)
+          command = case rails_version
+                    when 2
+                      "script/generate"
+                    when 3
+                      "rails g"
+                    end
+
+          execute "#{command} #{args.join(" ")}"
         end
 
         def execute(command)
@@ -180,8 +197,10 @@ module GemSuit
         end
 
         def method_missing(method, *args)
-          if config.is_a?(Hash) && config.include?(method)
-            config[method]
+          hash = [locals, config].detect{|x| x.include?(method) if x.is_a?(Hash)}
+
+          if hash
+            hash[method]
           else
             super
           end
