@@ -53,6 +53,10 @@ module GemSuit
           File.readlines(expand_path(".new_files")).any?{|line| line.strip == relative_path}
         end
 
+        def bundle_install?
+          `bundle check`.include? "are satisfied"
+        end
+
         def rails_version
           root_path.match(/\/rails-(\d)\//)[1].to_i
         end

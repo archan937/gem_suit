@@ -35,6 +35,7 @@ module GemSuit
 
           restore_all
           write_all
+          bundle_install
 
           prepare
           prepare_database
@@ -61,6 +62,10 @@ module GemSuit
 
         def locals
           locals_for_template @relative_path if @relative_path
+        end
+
+        def bundle_install
+          execute "bundle install" if bundle_install?
         end
 
         def prepare_database
