@@ -7,7 +7,6 @@ module Suite
     extend self
 
     def run
-      # bundle_install
       rake_install
       ask_mysql_password
       create_test_database
@@ -18,13 +17,6 @@ module Suite
 
     def root_dir
       @root_dir ||= File.expand_path("../../..", __FILE__)
-    end
-
-    def bundle_install
-      cmd = "cd #{root_dir} && bundle install"
-      puts "Running 'bundle install' (this can take several minutes)".green
-      puts cmd
-      `#{cmd}`
     end
 
     def rake_install
