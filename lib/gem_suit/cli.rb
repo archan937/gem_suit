@@ -33,6 +33,7 @@ module GemSuit
     def restore
       require "test/shared/test/test_application.rb"
       application = TestApplication.new false
+      application.silent = true
       [2, 3].each do |rails_version|
         application.root_path = File.expand_path "test/rails-#{rails_version}/dummy"
         application.restore_all
@@ -42,6 +43,7 @@ module GemSuit
     def write
       require "test/shared/test/test_application.rb"
       application = TestApplication.new false
+      application.silent = true
       [2, 3].each do |rails_version|
         application.root_path = File.expand_path "test/rails-#{rails_version}/dummy"
         application.write_all
@@ -49,7 +51,7 @@ module GemSuit
     end
 
     def method_missing(method, *args)
-      puts "Unrecognized command: '#{method}' (see: 'suit usage')"
+      puts "Unrecognized command: '#{method}' (see: 'suit usage')".red
     end
 
   end

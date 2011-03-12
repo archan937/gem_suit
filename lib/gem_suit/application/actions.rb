@@ -13,8 +13,8 @@ module GemSuit
       end
 
       module ClassMethods
-        def setup(config = {})
-          self.new.setup config
+        def setup(*args)
+          self.new.setup *args
         end
 
         def restore_all
@@ -23,8 +23,11 @@ module GemSuit
       end
 
       module InstanceMethods
+        attr_accessor :silent
+
         def setup(config = {})
           @config = config
+          silent  = config.delete :silent if silent.nil?
 
           log "\n".ljust 145, "="
           log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n"
@@ -190,7 +193,7 @@ module GemSuit
         end
 
         def log(action, string = nil)
-          return if @silent
+          return if silent
           output = [string || action]
           output.unshift action.to_s.capitalize.ljust(10, " ") unless string.nil?
           puts output.join("  ")
