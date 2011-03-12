@@ -1,3 +1,5 @@
+require "gem_suit/application/utils/gemfile"
+
 module GemSuit
   class Application < ::Thor::Group
     module Utils
