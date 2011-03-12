@@ -151,7 +151,7 @@ module GemSuit
               log :creating, relative_path
               template file,
                        expand_path(relative_path),
-                       {:mysql_password => mysql_password}.merge(config_for_template(expand_path(relative_path) || {}))
+                       {:mysql_password => mysql_password}.merge(config_for_template(expand_path(relative_path)) || {})
             end
           end
 
