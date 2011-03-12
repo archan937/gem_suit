@@ -13,11 +13,11 @@ module GemSuit
 
         def gems
           @gems ||= begin
-            {}.tap do
-              gem_file  = @files.detect{|file| File.exists? file}
-              gem_specs = File.readlines(gem_file).join "\n"
-              instance_eval gem_specs
-            end
+            @gems     = {}
+            gem_file  = @files.detect{|file| File.exists? file}
+            gem_specs = File.readlines(gem_file).join "\n"
+            instance_eval gem_specs
+            gems
           end
         end
 
