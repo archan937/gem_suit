@@ -1,3 +1,6 @@
+require "rubygems"
+require "rich/support/core/string/colorize"
+
 module GemSuit
   module CLI
     extend self
