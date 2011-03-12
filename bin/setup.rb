@@ -7,10 +7,10 @@ module Suite
     extend self
 
     def run
-      bundle_install
+      # bundle_install
       rake_install
-      # ask_mysql_password
-      # create_test_database
+      ask_mysql_password
+      create_test_database
       print_final_word
     end
 

@@ -1,4 +1,5 @@
 require "thor/group"
+require "rich/support/core/string/colorize"
 require "gem_suit/actioncontroller"
 require "gem_suit/application/utils"
 require "gem_suit/application/actions"

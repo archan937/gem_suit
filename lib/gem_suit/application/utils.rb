@@ -10,16 +10,18 @@ module GemSuit
       end
 
       module ClassMethods
-        attr_accessor :_file_
+        attr_accessor :__file__
 
         def inherited(klass)
-          klass._file_ = caller.first[/^[^:]+/]
+          klass.__file__ = caller.first[/^[^:]+/]
         end
       end
 
       module InstanceMethods
+        attr_accessor :root_path
+
         def root_path
-          defined?(Rails) ? Rails.root : File.expand_path("../..", self.class._file_)
+          @root_path || (defined?(Rails) ? Rails.root : File.expand_path("../..", self.class.__file__))
         end
 
         def shared_path
@@ -60,7 +62,7 @@ module GemSuit
           when 2
             File.readlines(expand_path("config/environment.rb")).detect do |line|
               match = line.match /RAILS_GEM_VERSION\s*=\s*["']([\d\.]+)["']/
-              $1 if match
+              match.captures[0] if match
             end
           when 3
             files = [expand_path(stashed("Gemfile")), expand_path("Gemfile")]

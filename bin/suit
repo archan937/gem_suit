@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 
-def tailor
-  # Generate a Bundler gem and provide it with Rails 2 and 3 test suite
-end
+require "rubygems"
+require "gem_suit/cli"
 
-def up
-  # Provide existing with Rails 2 and 3 test suite
-end
+GemSuit::CLI.send ARGV.shift, *ARGV

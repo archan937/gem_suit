@@ -157,7 +157,7 @@ module GemSuit
               begin
                 @relative_path = Pathname.new(file).relative_path_from(root).to_s
                 new_files << @relative_path unless new_file?(expand_path(@relative_path)) || File.exists?(stashed(@relative_path))
-                log :creating, @relative_path
+                log :creating, expand_path(@relative_path)
                 template file, expand_path(@relative_path), :verbose => false
               ensure
                 @relative_path = nil
@@ -198,7 +198,6 @@ module GemSuit
 
         def method_missing(method, *args)
           hash = [locals, config].detect{|x| x.include?(method) if x.is_a?(Hash)}
-
           if hash
             hash[method]
           else
@@ -215,7 +214,7 @@ module GemSuit
 
           require File.expand_path("config/environment.rb", root_path)
           require "#{"rails/" if Rails::VERSION::MAJOR >= 3}test_help"
-          Dir[File.expand_path("#{File.basename(self.class._file_, ".rb")}/**/*.rb", File.dirname(self.class._file_))].each do |file|
+          Dir[File.expand_path("#{File.basename(self.class.__file__, ".rb")}/**/*.rb", File.dirname(self.class.__file__))].each do |file|
             require file
           end
 
