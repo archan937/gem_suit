@@ -6,29 +6,62 @@ module GemSuit
     module Actions
 
       def self.included(base)
+        base.extend ClassMethods
         base.send :include, Utils
         base.send :include, InstanceMethods
         base.send :include, Thor::Actions
       end
 
-      module InstanceMethods
+      module ClassMethods
+        def setup(*args)
+          self.new.setup *args
+        end
 
-        def setup(&block)
+        def restore_all
+          self.new.restore_all true
+        end
+      end
+
+      module InstanceMethods
+        def setup(*args)
+          @args = args
+
           log "\n".ljust 145, "="
-          log "Setting up test environment for Rails #{rails_version}\n"
+          log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n"
           log "\n".rjust 145, "="
 
           restore_all
           write_all
 
-          yield self if block_given?
+          prepare
+          prepare_database
+          @prepared = true
 
           log "\n".rjust 145, "="
-          log "Environment for Rails #{rails_version} is ready for testing"
+          log "Environment for Rails #{[rails_version, description].compact.join(" - ")} is ready for testing"
           log "=" .ljust 144, "="
 
-          @prepared = true
           run_environment
+        end
+
+        def description
+          # Implement in subclass
+        end
+
+        def prepare
+          # Implement in subclass
+        end
+
+        def prepare_database
+          return if @db_prepared
+          if @ran_generator
+            stash   "db/schema.rb"
+            execute "rake db:test:purge"
+            execute "RAILS_ENV=test rake db:migrate"
+          else
+            execute "rake db:test:load"
+          end
+          @db_prepared = true
         end
 
         def restore_all(force = nil)
@@ -95,7 +128,7 @@ module GemSuit
 
         def write(string)
           stash string
-          generate string
+          create string
         end
 
         def stash(string)
@@ -106,7 +139,7 @@ module GemSuit
           end
         end
 
-        def generate(string)
+        def create(string)
           new_files = []
 
           ["shared", "rails-#{rails_version}"].each do |dir|
@@ -115,8 +148,10 @@ module GemSuit
               next if File.directory? file
               relative_path = Pathname.new(file).relative_path_from(root).to_s
               new_files << relative_path unless new_file?(expand_path(relative_path)) || File.exists?(stashed(relative_path))
-              log :generating, relative_path
-              template file, expand_path(relative_path)
+              log :creating, relative_path
+              template file,
+                       expand_path(relative_path),
+                       {:mysql_password => mysql_password}.merge(config_for_template(expand_path(relative_path) || {}))
             end
           end
 
@@ -125,6 +160,10 @@ module GemSuit
               file << new_files.collect{|x| "#{x}\n"}.join("")
             end
           end
+        end
+
+        def config_for_template(path)
+          # Implement in subclass
         end
 
         def execute(command)
@@ -140,7 +179,17 @@ module GemSuit
           puts output.join("  ")
         end
 
+        def method_missing(method, *_args)
+          if args.try :include?, method
+            args[method]
+          else
+            super
+          end
+        end
+
       private
+
+        attr_reader :args
 
         def run_environment
           ENV["RAILS_ENV"] = "test"
@@ -153,7 +202,6 @@ module GemSuit
 
           puts "\nRunning Rails #{Rails::VERSION::STRING}\n\n"
         end
-
       end
 
     end

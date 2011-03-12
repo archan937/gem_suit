@@ -22,10 +22,6 @@ module GemSuit
       def source_root
         @source_root ||= self.new.templates_path
       end
-
-      def setup(&block)
-        self.new.setup &block
-      end
     end
 
   end
