@@ -158,7 +158,7 @@ module GemSuit
                 @relative_path = Pathname.new(file).relative_path_from(root).to_s
                 new_files << @relative_path unless new_file?(expand_path(@relative_path)) || File.exists?(stashed(@relative_path))
                 log :creating, @relative_path
-                template file, expand_path(@relative_path)
+                template file, expand_path(@relative_path), :verbose => false
               ensure
                 @relative_path = nil
               end
