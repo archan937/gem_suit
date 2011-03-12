@@ -65,7 +65,7 @@ module GemSuit
         end
 
         def bundle_install
-          execute "bundle install" if bundle_install?
+          execute "bundle install", "(this can take several minutes...)" if bundle_install?
         end
 
         def prepare_database
@@ -191,9 +191,9 @@ module GemSuit
           execute "#{command} #{args.join(" ")}"
         end
 
-        def execute(command)
+        def execute(command, text = "")
           return if command.to_s.gsub(/\s/, "").size == 0
-          log :executing, command
+          log :executing, "#{command} #{text}"
           `cd #{root_path} && #{command}`
         end
 
