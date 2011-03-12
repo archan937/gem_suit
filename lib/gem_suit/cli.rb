@@ -6,21 +6,22 @@ module GemSuit
     extend self
 
     def usage
-      puts <<-CONTENT.gsub(/^ {9}/, "")
-        Usage
+      puts <<-CONTENT
 
-          #{"suit [action] [options]".green}
+Usage
 
-        Actions
+  #{"suit [action] [options]".green}
 
-          tailor   - Generate a new gem with Bundler provided with the GemSuit test suite
-          up       - Provide an existing gem with the GemSuit test suite
-          restore  - Restore all files within the GemSuit test applications
-          write    - Write all files within the GemSuit test applications
-          server   - Start one of the GemSuit test application servers
-          console  - Start one of the GemSuit test application consoles
+Actions
 
-        #{"Copyright © 2011 Paul Engel, released under the MIT license".yellow}
+  tailor   - Generate a new gem with Bundler provided with the GemSuit test suite
+  up       - Provide an existing gem with the GemSuit test suite
+  restore  - Restore all files within the GemSuit test applications
+  write    - Write all files within the GemSuit test applications
+  server   - Start one of the GemSuit test application servers
+  console  - Start one of the GemSuit test application consoles
+
+#{"Copyright © 2011 Paul Engel, released under the MIT license".yellow}
 
       CONTENT
     end
