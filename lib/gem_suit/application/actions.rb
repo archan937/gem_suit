@@ -13,8 +13,8 @@ module GemSuit
       end
 
       module ClassMethods
-        def setup(*args)
-          self.new.setup *args
+        def setup(config = {})
+          self.new.setup config
         end
 
         def restore_all
@@ -23,8 +23,8 @@ module GemSuit
       end
 
       module InstanceMethods
-        def setup(*args)
-          @args = args
+        def setup(config = {})
+          @config = config
 
           log "\n".ljust 145, "="
           log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n"
@@ -179,9 +179,9 @@ module GemSuit
           puts output.join("  ")
         end
 
-        def method_missing(method, *_args)
-          if args.try :include?, method
-            args[method]
+        def method_missing(method, *args)
+          if config.is_a?(Hash) && config.include?(method)
+            config[method]
           else
             super
           end
@@ -189,7 +189,7 @@ module GemSuit
 
       private
 
-        attr_reader :args
+        attr_reader :config
 
         def run_environment
           ENV["RAILS_ENV"] = "test"
