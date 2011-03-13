@@ -1,5 +1,6 @@
 require "pathname"
 require "fileutils"
+require "gem_suit/application/utils"
 
 module GemSuit
   class Application < ::Thor::Group
