@@ -61,7 +61,7 @@ module GemSuit
         end
 
         def locals
-          locals_for_template @relative_path if @relative_path
+          @locals ||= (locals_for_template @relative_path if @relative_path) || {}
         end
 
         def bundle_install
@@ -164,6 +164,7 @@ module GemSuit
               next if File.directory? file
               begin
                 @relative_path = Pathname.new(file).relative_path_from(root).to_s
+                @locals        = nil
                 new_files << @relative_path unless new_file?(expand_path(@relative_path)) || File.exists?(stashed(@relative_path))
                 log :creating, expand_path(@relative_path)
                 template file, expand_path(@relative_path), :verbose => false
@@ -205,9 +206,8 @@ module GemSuit
         end
 
         def method_missing(method, *args)
-          hash = [locals, config].detect{|x| x.include?(method) if x.is_a?(Hash)}
-          if hash
-            hash[method]
+          if locals.include? method
+            locals[method]
           else
             super
           end
