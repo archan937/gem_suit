@@ -73,7 +73,10 @@ Actions
       root_path     = File.expand_path "test/rails-#{rails_version}/dummy"
       command       = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
 
-      restore false
+      require "test/rails-#{rails_version}/dummy/test/test_application.rb"
+      application = TestApplication.new :verbose => false
+      application.bundle_install
+
       system "cd #{root_path} && #{command}"
     end
 

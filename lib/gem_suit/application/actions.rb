@@ -63,12 +63,26 @@ module GemSuit
           # Implement in subclass
         end
 
+        def config
+          @config || {}
+        end
+
         def locals
           @locals ||= (locals_for_template @relative_path if @relative_path) || {}
         end
 
         def bundle_install
-          execute "bundle install", "(this can take several minutes...)" if bundle_install?
+          return unless bundle_install?
+          if verbose
+            execute "bundle install", "(this can take several minutes...)"
+          else
+            puts "Running `bundle install` (this can take several minutes...)".yellow
+            `cd #{root_path} && bundle install`
+          end
+        end
+
+        def bundle_install?
+          `cd #{root_path} && bundle check`.any?{|line| line.include? "`bundle install`"}
         end
 
         def prepare_database
