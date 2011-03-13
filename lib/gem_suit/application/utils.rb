@@ -21,7 +21,7 @@ module GemSuit
         attr_accessor :root_path
 
         def root_path
-          @root_path || (defined?(Rails) ? Rails.root : File.expand_path("../..", self.class.__file__))
+          @root_path || (defined?(Rails) ? Rails.root : File.expand_path("../..", self.class.__file__)).to_s
         end
 
         def shared_path
