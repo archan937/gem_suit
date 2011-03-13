@@ -20,14 +20,17 @@ module GemSuit
         def restore_all
           self.new.restore_all true
         end
+
+        def write_all
+          self.new.write_all
+        end
       end
 
       module InstanceMethods
-        attr_accessor :silent
+        attr_accessor :config, :verbose
 
         def setup(config = {})
           @config = config
-          silent  = config.delete :silent if silent.nil?
 
           log "\n".ljust 145, "="
           log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n"
@@ -199,7 +202,7 @@ module GemSuit
         end
 
         def log(action, string = nil)
-          return if silent
+          return unless verbose
           output = [string || action]
           output.unshift action.to_s.capitalize.ljust(10, " ") unless string.nil?
           puts output.join("  ")
@@ -214,8 +217,6 @@ module GemSuit
         end
 
       private
-
-        attr_reader :config
 
         def run_environment
           ENV["RAILS_ENV"] = "test"

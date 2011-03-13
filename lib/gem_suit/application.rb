@@ -6,22 +6,24 @@ require "gem_suit/application/actions"
 
 module GemSuit
   class Application < ::Thor::Group
-
     include Application::Actions
 
     STASHED_EXT = "stashed"
 
-    def initialize(validate_path = true)
+    def initialize(options = {:validate_root_path => true, :verbose => true})
       super [], {}, {}
-      if validate_path && !root_path.match(/rails-\d/)
-        log "Running a #{self.class.name} instance from an invalid path: '#{root_path}' needs to match ".red + "/rails-\\d/".yellow
-        exit
+      options.each do |key, value|
+        send :"#{key}=", value
       end
     end
 
     class << self
       def source_root
-        @source_root ||= self.new.templates_path
+        @source_root
+      end
+
+      def source_root=(path)
+        @source_root = path
       end
     end
 
