@@ -61,7 +61,6 @@ Actions
     def files(action, verbose = true)
       require "test/shared/test/test_application.rb"
       application = TestApplication.new :validate_root_path => false, :verbose => false
-      application.config = {:logic => :devise}
       [2, 3].each do |rails_version|
         application.root_path = File.expand_path "test/rails-#{rails_version}/dummy"
         application.send :"#{action}_all"
