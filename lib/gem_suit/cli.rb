@@ -38,6 +38,18 @@ Actions
       CONTENT
     end
 
+    def run(*args)
+      if Dir["*.gemspec"].empty?
+        puts "Missing *.gemspec in current directory. Is this really a gem directory?".red
+        exit
+      end
+      send args.shift, *ARGV
+    end
+
+    def method_missing(method, *args)
+      puts "Unrecognized command: '#{method}' (see: 'suit usage')".red
+    end
+
     def tailor(name)
       # Generate a Bundler gem and provide it with Rails 2 and 3 test suite
     end
@@ -63,10 +75,6 @@ Actions
       rails :console, *args
     end
     alias_method :c, :console
-
-    def method_missing(method, *args)
-      puts "Unrecognized command: '#{method}' (see: 'suit usage')".red
-    end
 
   private
 

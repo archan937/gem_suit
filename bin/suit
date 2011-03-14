@@ -3,4 +3,4 @@
 require "rubygems"
 require "gem_suit/cli"
 
-GemSuit::CLI.send ARGV.shift, *ARGV
+GemSuit::CLI.run *ARGV
