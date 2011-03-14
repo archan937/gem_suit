@@ -1,5 +1,18 @@
 require "rich/support/core/string/colorize"
 
+# - suit tailor
+# - suit up
+# - suit fit (setup)
+# + suit restore
+# + suit write
+# + suit server
+# + suit console
+# - suit test
+# - suit test:unit
+# - suit test:functionals
+# - suit test:integration
+# - suit test:suit (integrator)
+
 module GemSuit
   module CLI
     extend self
