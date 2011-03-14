@@ -39,7 +39,7 @@ Actions
     end
 
     def run(*args)
-      if Dir["*.gemspec"].empty?
+      if args.first != "tailor" && Dir["*.gemspec"].empty?
         puts "Missing *.gemspec in current directory. Is this really a gem directory?".red
         exit
       end
