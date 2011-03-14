@@ -1,30 +1,20 @@
 require "rich/support/core/string/colorize"
-
-# - suit tailor
-# - suit up
-# - suit fit (setup)
-# + suit restore
-# + suit write
-# + suit server
-# + suit console
-# - suit test
-# - suit test:unit
-# - suit test:functionals
-# - suit test:integration
-# - suit test:suit (integrator)
+require "gem_suit/cli/suit"
 
 module GemSuit
   module CLI
     extend self
+
+    class Error < StandardError; end
 
     def usage
       puts <<-CONTENT
 
 Usage
 
-  #{"suit [action] [options]".green}
+  #{"suit COMMAND [ARGS]".green}
 
-Actions
+Commands
 
   tailor   - Generate a new gem with Bundler provided with the GemSuit test suite
   up       - Provide an existing gem with the GemSuit test suite
@@ -39,68 +29,11 @@ Actions
     end
 
     def run(*args)
-      if args.first != "tailor" && Dir["*.gemspec"].empty?
-        puts "Missing *.gemspec in current directory. Is this really a gem directory?".red
-        exit
+      begin
+        Suit.new.send args.shift, *ARGV
+      rescue Error => e
+        puts e.message.red
       end
-      send args.shift, *ARGV
-    end
-
-    def method_missing(method, *args)
-      puts "Unrecognized command: '#{method}' (see: 'suit usage')".red
-    end
-
-    def tailor(name)
-      # Generate a Bundler gem and provide it with Rails 2 and 3 test suite
-    end
-
-    def up
-      # Provide existing with Rails 2 and 3 test suite
-    end
-
-    def restore(verbose = true)
-      files :restore, verbose
-    end
-
-    def write(verbose = true)
-      files :write, verbose
-    end
-
-    def server(*args)
-      rails :server, *args
-    end
-    alias_method :s, :server
-
-    def console(*args)
-      rails :console, *args
-    end
-    alias_method :c, :console
-
-  private
-
-    def files(action, verbose = true)
-      puts "(in #{File.expand_path("")})"
-
-      require "test/shared/test/test_application.rb"
-      application = TestApplication.new :validate_root_path => false, :verbose => false
-      [2, 3].each do |rails_version|
-        application.root_path = File.expand_path "test/rails-#{rails_version}/dummy"
-        application.send :"#{action}_all"
-      end
-
-      puts "Done #{action.to_s[0..-2]}ing files".green if verbose
-    end
-
-    def rails(command, *args)
-      rails_version = [(args.last.match(/\d+/).to_i if args.last), 3].compact.max
-      root_path     = File.expand_path "test/rails-#{rails_version}/dummy"
-      command       = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
-
-      require "test/rails-#{rails_version}/dummy/test/test_application.rb"
-      application = TestApplication.new :verbose => false
-      application.bundle_install
-
-      system "cd #{root_path} && #{command}"
     end
 
   end
