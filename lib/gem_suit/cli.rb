@@ -79,12 +79,15 @@ Actions
   private
 
     def files(action, verbose = true)
+      puts "(in #{File.expand_path("")})"
+
       require "test/shared/test/test_application.rb"
       application = TestApplication.new :validate_root_path => false, :verbose => false
       [2, 3].each do |rails_version|
         application.root_path = File.expand_path "test/rails-#{rails_version}/dummy"
         application.send :"#{action}_all"
       end
+
       puts "Done #{action.to_s[0..-2]}ing files".green if verbose
     end
 
