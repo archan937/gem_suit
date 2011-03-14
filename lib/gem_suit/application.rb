@@ -1,6 +1,4 @@
-require "rich/support/core/string/colorize"
 require "thor/group"
-require "gem_suit/actioncontroller"
 require "gem_suit/application/actions"
 
 module GemSuit

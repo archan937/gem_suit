@@ -1,5 +1,6 @@
 require "pathname"
 require "fileutils"
+require "rich/support/core/string/colorize"
 require "gem_suit/application/utils"
 
 module GemSuit
@@ -238,6 +239,7 @@ module GemSuit
 
           require File.expand_path("config/environment.rb", root_path)
           require "#{"rails/" if Rails::VERSION::MAJOR >= 3}test_help"
+          require "gem_suit/actioncontroller"
           Dir[File.expand_path("#{File.basename(self.class.__file__, ".rb")}/**/*.rb", File.dirname(self.class.__file__))].each do |file|
             require file
           end
