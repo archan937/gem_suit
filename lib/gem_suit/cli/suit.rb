@@ -51,7 +51,7 @@ module GemSuit
       end
 
       def method_missing(method, *args)
-        raise Error, "Unrecognized command: '#{method}'. Please read `suit usage`."
+        raise Error, "Unrecognized command \"#{method}\". Please consult `suit help`."
       end
 
       def files(action, verbose = true)

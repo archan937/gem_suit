@@ -7,7 +7,7 @@ module GemSuit
 
     class Error < StandardError; end
 
-    def usage
+    def help
       puts <<-CONTENT
 
 Usage
@@ -29,10 +29,14 @@ Commands
     end
 
     def run(*args)
-      begin
-        Suit.new.send args.shift, *ARGV
-      rescue Error => e
-        puts e.message.red
+      if respond_to? method = args.shift
+        send method
+      else
+        begin
+          Suit.new.send method, *args
+        rescue Error => e
+          puts e.message.red
+        end
       end
     end
 
