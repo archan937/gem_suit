@@ -1,17 +1,12 @@
 module GemSuit
-  class CLI
-    module Utils
+  class CLI < Thor
+    module Test
 
       def self.included(base)
         base.send :include, InstanceMethods
       end
 
       module InstanceMethods
-
-        def all
-
-        end
-
       end
 
     end

@@ -1,5 +1,5 @@
 module GemSuit
-  class CLI
+  class CLI < Thor
     module Utils
 
       def self.included(base)
@@ -7,10 +7,6 @@ module GemSuit
       end
 
       module InstanceMethods
-
-        def help
-          puts File.read(File.expand_path("../help.txt", __FILE__)).colorize
-        end
 
         def assert_valid_gemdir
           if Dir["*.gemspec"].empty?

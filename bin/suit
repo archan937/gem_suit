@@ -5,6 +5,6 @@ require "gem_suit/cli"
 
 begin
   GemSuit::CLI.start
-rescue Error => e
+rescue GemSuit::CLI::Error => e
   puts e.message.red
 end

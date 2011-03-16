@@ -1,6 +1,6 @@
 module GemSuit
-  class CLI
-    module Utils
+  class CLI < Thor
+    module Builder
 
       def self.included(base)
         base.send :include, InstanceMethods
@@ -8,7 +8,7 @@ module GemSuit
 
       module InstanceMethods
 
-        def tailor(name, options = {})
+        def tailor(name)
 
           # Generate a Bundler gem and provide it with Rails 2 and 3 test suite
         end

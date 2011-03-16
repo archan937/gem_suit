@@ -1,6 +1,5 @@
 require "thor"
 require "rich/support/core/string/colorize"
-
 require "gem_suit/cli/utils"
 require "gem_suit/cli/builder"
 require "gem_suit/cli/application"
@@ -28,6 +27,32 @@ module GemSuit
     include Builder
     include Application
     include Test
+
+    desc "restore", "Restore all files within the GemSuit test applications"
+    method_options :verbose => false
+    def restore
+      files :restore, options.verbose?
+    end
+
+    desc "write", "Write all files within the GemSuit test applications"
+    method_options :verbose => false
+    def write
+      files :write, options.verbose?
+    end
+
+    desc "server", "Start one of the GemSuit test application servers"
+    method_options [:version, :v] => 3
+    map "s" => :server
+    def server
+      rails :server, options.version
+    end
+
+    desc "console", "Start one of the GemSuit test application consoles"
+    method_options [:version, :v] => 3
+    map "c" => :console
+    def console
+      rails :console, options.version
+    end
 
   private
 
