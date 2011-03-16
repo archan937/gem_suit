@@ -5,7 +5,7 @@ require "gem_suit/cli/builder"
 require "gem_suit/cli/application"
 require "gem_suit/cli/test"
 
-# - suit tailor
+# + suit tailor
 # - suit up
 # - suit fit (setup)
 # + suit restore
@@ -29,24 +29,27 @@ module GemSuit
     include Test
 
     desc "tailor NAME", "Generate a Bundler gem and provide it with GemSuit"
-    method_options [:interactive, "-i"] => false
+    method_options [:interactive, "-i"] => false, [:verbose, "-v"] => false
     def tailor(name)
       system "bundle gem #{name}"
       system "cd #{name} && suit up #{"-i" if options.interactive?}"
     end
 
     desc "up", "Provide an existing gem with GemSuit"
-    method_options [:interactive, "-i"] => false
+    method_options [:interactive, "-i"] => false, [:verbose, "-v"] => false
     def up
-      assert_valid_gemdir
+      assert_gem_dir true
+      move_test_suites
+      create_shared_assets
       rails_new 2
       rails_new 3
       system "suit fit"
     end
 
     desc "fit", "Establish the GemSuit in your environment"
+    method_options [:verbose, "-v"] => false
     def fit
-      assert_valid_gemdir
+      assert_suit_dir
       rake_install
       ask_mysql_password
       create_test_database

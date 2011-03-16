@@ -7,9 +7,20 @@ module GemSuit
       end
 
       module InstanceMethods
+      private
+
+        def move_test_suites
+
+        end
+
+        def create_shared_assets
+
+        end
+
         def rails_new(major_version)
-          major_version = 3
+          version = ""
           puts "rails new #{version} dummy"
+          # `rails new #{version} dummy`
         end
 
         def rake_install
@@ -22,7 +33,7 @@ module GemSuit
         def ask_mysql_password
           puts "Setting up the MySQL test database".green
           puts "To be able to run integration tests (with Capybara in Firefox) we need to store your MySQL password in a git-ignored file (test/shared/mysql)"
-          puts "Please provide the password of your MySQL root user: (press Enter when blank)"
+          puts "Please provide the password of your MySQL root user: (press Enter when blank)", true
 
           begin
             system "stty -echo"
@@ -30,8 +41,6 @@ module GemSuit
           ensure
             system "stty echo"
           end
-
-          puts "password: #{password}"
 
           # file = "test/shared/mysql"
           # if password.length == 0

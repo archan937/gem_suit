@@ -7,11 +7,12 @@ module GemSuit
       end
 
       module InstanceMethods
+      private
 
         def files(action)
-          assert_valid_gemdir
-          puts "(in #{File.expand_path("")})"
+          assert_suit_dir
 
+          puts "(in #{File.expand_path("")})"
           require "test/shared/test/test_application.rb"
           application = TestApplication.new :validate_root_path => false, :verbose => options.verbose?
           [2, 3].each do |rails_version|
@@ -23,7 +24,7 @@ module GemSuit
         end
 
         def rails(command)
-          assert_valid_gemdir
+          assert_suit_dir
 
           root_path = File.expand_path "test/rails-#{options.version}/dummy"
           command   = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[options.version]
@@ -34,7 +35,6 @@ module GemSuit
 
           system "cd #{root_path} && #{command}"
         end
-
       end
 
     end
