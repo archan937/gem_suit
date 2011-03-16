@@ -7,31 +7,29 @@ module GemSuit
       end
 
       module InstanceMethods
-      private
 
-        def files(action, verbose)
+        def files(action)
           assert_valid_gemdir
-
           puts "(in #{File.expand_path("")})"
 
           require "test/shared/test/test_application.rb"
-          application = TestApplication.new :validate_root_path => false, :verbose => verbose
+          application = TestApplication.new :validate_root_path => false, :verbose => options.verbose?
           [2, 3].each do |rails_version|
             application.root_path = File.expand_path "test/rails-#{rails_version}/dummy"
             application.send :"#{action}_all"
           end
 
-          puts "Done #{action.to_s[0..-2]}ing files".green if verbose
+          puts "Done #{action.to_s[0..-2]}ing files".green if options.verbose?
         end
 
-        def rails(command, rails_version)
+        def rails(command)
           assert_valid_gemdir
 
-          root_path = File.expand_path "test/rails-#{rails_version}/dummy"
-          command   = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
+          root_path = File.expand_path "test/rails-#{options.version}/dummy"
+          command   = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[options.version]
 
-          require "test/rails-#{rails_version}/dummy/test/test_application.rb"
-          application = TestApplication.new :verbose => false
+          require "test/rails-#{options.version}/dummy/test/test_application.rb"
+          application = TestApplication.new :verbose => options.verbose?
           application.bundle_install
 
           system "cd #{root_path} && #{command}"
