@@ -3,4 +3,8 @@
 require "rubygems"
 require "gem_suit/cli"
 
-GemSuit::CLI.run *ARGV
+begin
+  GemSuit::CLI.start
+rescue Error => e
+  puts e.message.red
+end

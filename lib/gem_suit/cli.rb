@@ -1,43 +1,38 @@
+require "thor"
 require "rich/support/core/string/colorize"
-require "gem_suit/cli/suit"
+
+require "gem_suit/cli/utils"
+require "gem_suit/cli/builder"
+require "gem_suit/cli/application"
+require "gem_suit/cli/test"
+
+# - suit tailor
+# - suit up
+# - suit fit (setup)
+# + suit restore
+# + suit write
+# + suit server
+# + suit console
+# - suit test
+# - suit test:unit
+# - suit test:functionals
+# - suit test:integration
+# - suit test:suit (integrator)
 
 module GemSuit
-  module CLI
-    extend self
+  class CLI < Thor
 
     class Error < StandardError; end
 
-    def help
-      puts <<-CONTENT
+    include Utils
+    include Builder
+    include Application
+    include Test
 
-Usage
+  private
 
-  #{"suit COMMAND [ARGS]".green}
-
-Commands
-
-  tailor   - Generate a new gem with Bundler provided with the GemSuit test suite
-  up       - Provide an existing gem with the GemSuit test suite
-  restore  - Restore all files within the GemSuit test applications
-  write    - Write all files within the GemSuit test applications
-  server   - Start one of the GemSuit test application servers (alias s)
-  console  - Start one of the GemSuit test application consoles (alias c)
-
-#{"Copyright © 2011 Paul Engel, released under the MIT license".yellow}
-
-      CONTENT
-    end
-
-    def run(*args)
-      if respond_to? method = args.shift
-        send method
-      else
-        begin
-          Suit.new.send method, *args
-        rescue Error => e
-          puts e.message.red
-        end
-      end
+    def method_missing(method, *args)
+      raise Error, "Unrecognized command \"#{method}\". Please consult `suit help`."
     end
 
   end
