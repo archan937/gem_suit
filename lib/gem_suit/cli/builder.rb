@@ -9,8 +9,15 @@ module GemSuit
       module InstanceMethods
       private
 
-        def move_test_suites
+        GITKEEP_FILES = %w(./test/shared/public/images/.gitkeep
+                           ./test/shared/public/javascripts/.gitkeep
+                           ./test/shared/public/stylesheets/.gitkeep)
 
+        def move_test_suites
+          mkdir_p "tmp"
+          Dir["{test,spec,features}"].each do |dir|
+            mv dir, "tmp"
+          end
         end
 
         def create_shared_assets
