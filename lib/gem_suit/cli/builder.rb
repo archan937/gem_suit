@@ -17,13 +17,18 @@ module GemSuit
         end
 
         def create_shared_assets
-
+          # copy suit
+          # write templates
         end
 
         def rails_new(major_version)
           version = ""
           puts "rails new #{version} dummy"
           # `rails new #{version} dummy`
+        end
+
+        def create_symlinks
+
         end
 
         def rake_install

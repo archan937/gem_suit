@@ -43,6 +43,7 @@ module GemSuit
       create_shared_assets
       rails_new 2
       rails_new 3
+      create_symlinks
       system "suit fit"
     end
 
