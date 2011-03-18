@@ -25,6 +25,14 @@ module GemSuit
           end
         end
 
+        def suit_path
+          File.expand_path "../../../../suit", __FILE__
+        end
+
+        def templates_path
+          File.expand_path "../../../../templates", __FILE__
+        end
+
         alias_method :_puts, :puts
         def puts(string, force = false)
           _puts string if options.verbose? || force
