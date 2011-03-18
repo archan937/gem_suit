@@ -29,7 +29,6 @@ module GemSuit
         def puts(string, force = false)
           _puts string if options.verbose? || force
         end
-
       end
 
     end
