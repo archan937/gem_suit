@@ -1,3 +1,5 @@
+require "fileutils"
+
 module GemSuit
   class CLI < Thor
     module Builder
@@ -9,15 +11,26 @@ module GemSuit
       module InstanceMethods
       private
 
-        def move_test_suites
-          mkdir_p "tmp"
-          Dir["{test,spec,features}"].each do |dir|
-            mv dir, "tmp"
-          end
-        end
-
         def create_shared_assets
-          # copy suit
+          FileUtils.mkdir "spec"
+          FileUtils.mkdir "unit"
+
+          temp_dir = "tmp"
+          Dir["{test,spec,features}"].each do |dir|
+            FileUtils.mkdir temp_dir unless File.exists? temp_dir
+            FileUtils.mv dir, temp_dir
+          end
+
+          FileUtils.cp_r File.expand_path(suit_path, "."), "test"
+
+          Dir["#{temp_dir}/{test,spec,features}"].each do |dir|
+            destination = File.expand_path "test/shared/test/#{File.basename(dir)}"
+            FileUtils.rm destination if File.exists? destination
+            FileUtils.mv dir, destination
+          end
+          FileUtils.rmdir temp_dir
+
+          suit_config[:version] = GemSuit::VERSION::STRING
           # write templates
         end
 
