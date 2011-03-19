@@ -8,13 +8,15 @@ We Rails developers are experiencing great evolvements at the moment: not only a
 
 And so this is where GemSuit kicks in: it provides an extensive test suite to a (newly generated or existing) gem in which you can test the whole gem usage process. From a clean Rails (2 or 3) application, to running your gem generators, to testing your front-end with Capybara. A real world example of a GemSuit implementation is "Rich-CMS":https://github.com/archan937/rich_cms.
 
-h2. Generating a new gem
+h2. Installation
 
-Run the following command in your console if you haven't installed GemSuit yet:
+Run the following command in your console:
 
 <pre>
   gem install "gem_suit"
 </pre>
+
+h2. Generating a new gem
 
 Run the following command to create a gem with Bundler and the GemSuit test suite:
 
@@ -22,13 +24,7 @@ Run the following command to create a gem with Bundler and the GemSuit test suit
   suit tailor your_gem_name
 </pre>
 
-h2. Installation (for an already created gem)
-
-Run the following command in your console if you haven't installed GemSuit yet:
-
-<pre>
-  gem install "gem_suit"
-</pre>
+h2. For an already created gem
 
 Run the following command within your gem directory (e.g. in @Gems/rich_cms@ for the gem Rich-CMS)
 
@@ -48,7 +44,7 @@ h2. License
 
 Copyright (c) 2011 Paul Engel, released under the MIT license
 
-"http://holder.nl":http://holder.nl – "http://codehero.es":http://codehero.es – "http://gettopup.com":http://gettopup.com – "http://twitter.com/archan937":http://twitter.com/archan9370 – "paul.engel@holder.nl":mailto:paul.engel@holder.nl
+"http://holder.nl":http://holder.nl – "http://codehero.es":http://codehero.es – "http://gettopup.com":http://gettopup.com – "http://twitter.com/archan937":http://twitter.com/archan937 – "paul.engel@holder.nl":mailto:paul.engel@holder.nl
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
