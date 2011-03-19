@@ -2,6 +2,7 @@ require "thor"
 require "yaml"
 require "rich/support/core/string/colorize"
 require "gem_suit/cli/utils"
+require "gem_suit/cli/shell"
 require "gem_suit/cli/config"
 require "gem_suit/cli/builder"
 require "gem_suit/cli/application"
@@ -27,6 +28,7 @@ module GemSuit
     class Error < StandardError; end
 
     include Utils
+    include Shell
     include Config
     include Builder
     include Application

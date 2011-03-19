@@ -1,10 +1,12 @@
-require "yaml"
+require "gem_suit/cli/shell"
 
 module GemSuit
   class CLI < Thor
     module Builder
 
       class RailsApp
+        include Shell
+
         def initialize(version_spec)
           @version_spec = version_spec
         end
