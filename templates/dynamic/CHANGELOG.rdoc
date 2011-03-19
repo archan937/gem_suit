@@ -1,0 +1,5 @@
+= <%= gem_name %> CHANGELOG
+
+== Version 0.0.1 (<%= Time.now.strftime "%B xxx, %Y" %>)
+
+* Initial release
