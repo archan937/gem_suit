@@ -35,34 +35,47 @@ module GemSuit
     desc "tailor NAME", "Generate a Bundler gem and provide it with GemSuit"
     method_options [:interactive, "-i"] => false, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def tailor(name)
-      bundle_cmd = "bundle gem #{name}"
-      options.verbose? ? system(bundle_cmd) : `#{bundle_cmd}`
-      system "cd #{name} && suit up #{"-i" if options.interactive?}"
+      execute "bundle gem #{name}"
+      system  "cd #{name} && suit up #{options.collect{|k, v| "--#{k}" if v}.join(" ")}"
     end
 
     desc "up", "Provide an existing gem with GemSuit"
-    method_options [:interactive, "-i"] => false, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
+    method_options [:interactive, "-i"] => false, [:extensive, "-e"] => :boolean, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def up
       assert_gem_dir true
       create_shared_assets
       configure_suit
+      create_rails_apps
       write_templates
-      rails_new 2
-      rails_new 3
       create_symlinks
-      system "suit fit #{"-v" if options.verbose?}"
+      git_ignore
+      system "suit fit #{options.collect{|k, v| "--#{k}" if [:mysql, :capybara].include?(k.to_sym) && v}.join(" ")}"
     end
 
-    desc "config", "Configure GemSuit within your gem"
-    method_options [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean
-    def config
-      assert_suit_dir
-      if options.empty?
-        puts suit_config.dump, true
-      else
-        options.each do |key, value|
-          suit_config[key.to_sym] = value
+    desc "config [global]", "Configure GemSuit within your gem (use `suit config global` for global config)"
+    method_options [:rails_versions, "-r"] => :array, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean
+    def config(env)
+      global_options = [:rails_versions]
+      case env
+      when "global"
+        if options.empty?
+          puts suit_config_global.dump, true
+        else
+          options.reject{|k, v| !global_options.include? k.to_sym}.each do |key, value|
+            suit_config_global[key] = value
+          end
         end
+      when nil
+        assert_suit_dir
+        if options.empty?
+          puts suit_config.dump, true
+        else
+          options.reject{|k, v| global_options.include? k.to_sym}.each do |key, value|
+            suit_config[key] = value
+          end
+        end
+      else
+        raise Error, "Invalid config enviroment #{env.inspect}"
       end
     end
 

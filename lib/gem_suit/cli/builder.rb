@@ -1,4 +1,5 @@
 require "fileutils"
+require "gem_suit/cli/builder/rails_app"
 
 module GemSuit
   class CLI < Thor
@@ -13,6 +14,8 @@ module GemSuit
 
         TEST_SUITS = "{test,spec,features}"
         TEMP_DIR   = "tmp"
+
+        # `suit up`
 
         def create_shared_assets
           stash_test_suites
@@ -51,24 +54,66 @@ module GemSuit
         end
 
         def configure_suit
+          suit_config_global[:rails_versions] ||= %w(2.3.11 latest)
           suit_config[:mysql]    = options.key?(:mysql)    ? options.mysql    : agree?("Do you want to use a MySQL test database?", :no)
           suit_config[:capybara] = options.key?(:capybara) ? options.capybara : agree?("Do you want to use Capybara for testing?" , :yes)
           suit_config[:version]  = GemSuit::VERSION::STRING
         end
 
-        def write_templates
-          # template "a", "b"
+        def create_rails_apps
+          suit_config_global[:rails_versions].each do |version|
+            RailsApp.new(version).install
+            # if version == "latest" || version.to_i == 3
+            #   v = [`rails -v`.match(/\d\.\d+\.\d+/).to_s, version.match(/^\d\.\d+\.\d+$/).to_s, "3.0.5"].compact.max
+            # elsif version.match(/^\d\.\d+\.\d+$/)
+            #   v = version
+            # else
+            #   puts "Cannot generate Rails application with specified version #{version.inspect}".red, true
+            # end
+            #
+            # if answer = ask("Generate Rails #{v.to_i} application? You can specify another version or use 'n' to skip", v, v)
+            #   next if answer =~ is?(:no)
+            #   v = answer unless answer.empty?
+            #
+            #   unless v.match(/^\d\.\d+\.\d+$/)
+            #     puts "Cannot generate Rails application with specified version #{v.inspect}".red, true
+            #     next
+            #   end
+            #
+            #   dir = "test/rails-#{v.to_i}"
+            #   cmd = "rails #{v.to_i < 3 ? "_#{v}_" : "new"} dummy"
+            #
+            #   if File.exists? dir
+            #     puts "Already installed a Rails #{v.to_i} application (skipping #{v})".red, true
+            #     next
+            #   end
+            #
+            #   unless `gem list rails -i -v #{v}`.strip == "true"
+            #     puts "Installing Rails #{v} (this can take a while)".yellow, true
+            #     execute "gem install rails -v=#{v}"
+            #   end
+            #   puts "Generating Rails #{v} application"
+            #   puts cmd
+            #
+            #   FileUtils.mkdir dir
+            #   execute "cd #{dir} && #{cmd}"
+            # end
+          end
         end
 
-        def rails_new(major_version)
-          version = ""
-          puts "rails new #{version} dummy"
-          # `rails new #{version} dummy`
+        def write_templates
+          # template "Gemfile", "target"
         end
 
         def create_symlinks
-
+          # ln -s test
         end
+
+        def git_ignore
+          # ignore mysql_password
+        end
+
+        # `suit fit`
 
         def rake_install
           return if Dir["rails_generators"].empty?
@@ -101,8 +146,8 @@ module GemSuit
         end
 
         def create_test_database
-          # return unless suit_config.mysql?
-          #
+          return unless suit_config.mysql?
+
           # puts "Creating the test database".green
           # puts "cd test/rails-3/dummy && RAILS_ENV=test rake db:create"
           #

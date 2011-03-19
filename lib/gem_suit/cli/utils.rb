@@ -33,27 +33,38 @@ module GemSuit
           end
         end
 
+        def suit_gem_path
+          File.expand_path "../../../..", __FILE__
+        end
+
         def suit_path
-          File.expand_path "../../../../suit", __FILE__
+          File.expand_path "#{suit_gem_path}/suit", __FILE__
         end
 
         def templates_path
           File.expand_path "../../../../templates", __FILE__
         end
 
-        def agree?(question, default)
-          opts   = %w(y n).collect{|x| x =~ is?(default) ? x.upcase : x}
-          answer = ask("#{question} [#{opts}]") if options.interactive?
-          answer = default.to_s if answer.empty?
-          !!(answer =~ is?(:yes))
-        end
-
-        def ask(*args)
-          shell.ask *args
+        def execute(command, force = nil)
+          options.verbose? || force ? system(command) : `#{command}`
         end
 
         def is?(*args)
           shell.send :is?, *args
+        end
+
+        def agree?(question, default = nil)
+          opts   = %w(y n).collect{|x| !default.nil? && x =~ is?(default) ? x.upcase : x}
+          answer = ask question, opts, default
+          !!(answer =~ is?(:yes))
+        end
+
+        def ask(question, opts = nil, default = nil)
+          in_brackets = [opts, default].compact.first
+          statement   = [question, ("[#{in_brackets}]" unless in_brackets.nil?)].compact.join " "
+
+          answer = shell.ask statement if options.interactive? || default.nil?
+          answer.nil? || answer.empty? ? default.to_s : answer
         end
 
         alias_method :_puts, :puts

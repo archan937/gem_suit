@@ -1,8 +1,10 @@
-require "yaml"
+require "gem_suit/cli/config/hash"
 
 module GemSuit
   class CLI < Thor
     module Config
+
+      FILENAME = ".suit"
 
       def self.included(base)
         base.send :include, InstanceMethods
@@ -10,49 +12,13 @@ module GemSuit
 
       module InstanceMethods
       private
-        FILENAME = ".suit"
 
-        class Config
-          def initialize(file)
-            @filename = file
-          end
-
-          def dump
-            YAML.dump hash.inject({}){|h, (k, v)| h[k.to_sym] = v; h}
-          end
-
-          def [](key)
-            hash[key]
-          end
-
-          def []=(key, value)
-            hash[key] = value
-            dump_file
-          end
-
-        private
-
-          def method_missing(method, *args)
-            if method.to_s =~ /^(\w+)\?$/
-              hash.send method, *args
-            else
-              super
-            end
-          end
-
-          def hash
-            @hash ||= ::Thor::CoreExt::HashWithIndifferentAccess.new File.exists?(@filename) ? YAML.load_file(@filename) : {}
-          end
-
-          def dump_file
-            File.open @filename, "w" do |file|
-              file << dump
-            end
-          end
+        def suit_config_global
+          @suit_config_global ||= Config.new File.expand_path(FILENAME, suit_gem_path)
         end
 
         def suit_config
-          @suit_config ||= Config.new FILENAME
+          @suit_config ||= Config.new FILENAME, suit_config_global
         end
 
         def suit_config?

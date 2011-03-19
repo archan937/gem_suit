@@ -1,5 +1,5 @@
 {{green:Create your Firefox 'capybara' profile if you haven't done it yet}}
-Run the following in your console to start the profile manager and create the 'capybara' profile:"
+Run the following in your console to start the profile manager and create a profile called 'capybara':"
 {{yellow:[Mac]   $ /Applications/Firefox.app/Contents/MacOS/firefox-bin -profilemanager}}
 {{yellow:[Linux] $ cd <appdir> && ./firefox -profilemanager}}
-{{green:Done setting up the Rich-Support test suite! ^^}}
+{{green:Done establishing current GemSuit in your environment! ^^}}
