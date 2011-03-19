@@ -1,10 +1,12 @@
 require "thor"
+require "yaml"
 require "rich/support/core/string/colorize"
 require "gem_suit/cli/utils"
 require "gem_suit/cli/config"
 require "gem_suit/cli/builder"
 require "gem_suit/cli/application"
 require "gem_suit/cli/test"
+require "gem_suit/version"
 
 # + suit tailor
 # - suit up
@@ -31,21 +33,37 @@ module GemSuit
     include Test
 
     desc "tailor NAME", "Generate a Bundler gem and provide it with GemSuit"
-    method_options [:interactive, "-i"] => false, [:verbose, "-v"] => false
+    method_options [:interactive, "-i"] => false, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def tailor(name)
-      system "bundle gem #{name}"
+      bundle_cmd = "bundle gem #{name}"
+      options.verbose? ? system(bundle_cmd) : `#{bundle_cmd}`
       system "cd #{name} && suit up #{"-i" if options.interactive?}"
     end
 
     desc "up", "Provide an existing gem with GemSuit"
-    method_options [:interactive, "-i"] => false, [:verbose, "-v"] => false
+    method_options [:interactive, "-i"] => false, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def up
       assert_gem_dir true
       create_shared_assets
+      configure_suit
+      write_templates
       rails_new 2
       rails_new 3
       create_symlinks
-      system "suit fit"
+      system "suit fit #{"-v" if options.verbose?}"
+    end
+
+    desc "config", "Configure GemSuit within your gem"
+    method_options [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean
+    def config
+      assert_suit_dir
+      if options.empty?
+        puts suit_config.dump, true
+      else
+        options.each do |key, value|
+          suit_config[key.to_sym] = value
+        end
+      end
     end
 
     desc "fit", "Establish the GemSuit in your environment"
@@ -56,14 +74,6 @@ module GemSuit
       ask_mysql_password
       create_test_database
       print_capybara_instructions
-    end
-
-    desc "config", "Configure GemSuit within your gem"
-    method_options [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean
-    def config
-      options.each do |key, value|
-        suit_config[key] = value
-      end
     end
 
     desc "restore", "Restore all files within the GemSuit test applications"

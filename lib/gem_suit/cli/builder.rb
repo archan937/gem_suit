@@ -11,27 +11,53 @@ module GemSuit
       module InstanceMethods
       private
 
+        TEST_SUITS = "{test,spec,features}"
+        TEMP_DIR   = "tmp"
+
         def create_shared_assets
-          FileUtils.mkdir "spec"
-          FileUtils.mkdir "unit"
-
-          temp_dir = "tmp"
-          Dir["{test,spec,features}"].each do |dir|
-            FileUtils.mkdir temp_dir unless File.exists? temp_dir
-            FileUtils.mv dir, temp_dir
-          end
-
+          stash_test_suites
           FileUtils.cp_r File.expand_path(suit_path, "."), "test"
+          move_test_suits
+        end
 
-          Dir["#{temp_dir}/{test,spec,features}"].each do |dir|
-            destination = File.expand_path "test/shared/test/#{File.basename(dir)}"
-            FileUtils.rm destination if File.exists? destination
-            FileUtils.mv dir, destination
+        def stash_test_suites
+          return if Dir[TEST_SUITS].empty?
+          FileUtils.mkdir TEMP_DIR unless File.exists? TEMP_DIR
+
+          Dir[TEST_SUITS].each do |dir|
+            FileUtils.mv dir, TEMP_DIR
           end
-          FileUtils.rmdir temp_dir
+        end
 
-          suit_config[:version] = GemSuit::VERSION::STRING
-          # write templates
+        def move_test_suits
+          Dir["#{TEMP_DIR}/#{TEST_SUITS}"].each do |dir|
+            if File.basename(dir) == "test"
+              Dir["#{dir}/*"].each do |entry|
+                destination = File.expand_path "test/shared/test"
+                if %w(fixtures integration unit).include? File.basename(entry)
+                  FileUtils.rm_rf File.expand_path(File.basename(entry), destination)
+                end
+                FileUtils.mv entry, destination
+              end
+              FileUtils.rmdir dir
+            else
+              destination = File.expand_path "test/shared/#{File.basename(dir)}"
+              FileUtils.rm destination if File.exists? destination
+              FileUtils.mv dir, destination
+            end
+          end
+
+          FileUtils.rmdir TEMP_DIR if File.exists? TEMP_DIR
+        end
+
+        def configure_suit
+          suit_config[:mysql]    = options.key?(:mysql)    ? options.mysql    : agree?("Do you want to use a MySQL test database?", :no)
+          suit_config[:capybara] = options.key?(:capybara) ? options.capybara : agree?("Do you want to use Capybara for testing?" , :yes)
+          suit_config[:version]  = GemSuit::VERSION::STRING
+        end
+
+        def write_templates
+          # template "a", "b"
         end
 
         def rails_new(major_version)
@@ -45,13 +71,15 @@ module GemSuit
         end
 
         def rake_install
+          return if Dir["rails_generators"].empty?
           cmd = "rake install"
           puts "Running 'rake install' in order to be able to run the Rails 2 generators".green
           puts cmd
-          # `#{cmd}`
+          `#{cmd}`
         end
 
         def ask_mysql_password
+          return unless suit_config.mysql?
           puts "Setting up the MySQL test database".green
           puts "To be able to run integration tests (with Capybara in Firefox) we need to store your MySQL password in a git-ignored file (test/shared/mysql)"
           puts "Please provide the password of your MySQL root user: (press Enter when blank)", true
@@ -63,25 +91,28 @@ module GemSuit
             system "stty echo"
           end
 
-          # file = "test/shared/mysql"
-          # if password.length == 0
-          #   File.delete file if File.exists? file
-          # else
-          #   File.open(file, "w"){|f| f << password}
-          #   puts "\n"
-          # end
+          file = "test/shared/mysql"
+          if password.length == 0
+            File.delete file if File.exists? file
+          else
+            File.open(file, "w"){|f| f << password}
+            puts "\n"
+          end
         end
 
         def create_test_database
-          puts "Creating the test database".green
-          puts "cd test/rails-3/dummy && RAILS_ENV=test rake db:create"
-
+          # return unless suit_config.mysql?
+          #
+          # puts "Creating the test database".green
+          # puts "cd test/rails-3/dummy && RAILS_ENV=test rake db:create"
+          #
           # require "test/rails-3/dummy/test/support/dummy_app.rb"
           # DummyApp.create_test_database
         end
 
         def print_capybara_instructions
-          puts File.read(File.expand_path("../capybara", __FILE__)).colorize
+          return unless suit_config.capybara?
+          puts File.read(File.expand_path("../capybara", __FILE__)).colorize, true
         end
       end
 

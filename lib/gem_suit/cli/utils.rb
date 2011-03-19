@@ -1,3 +1,5 @@
+require "thor/shell/basic"
+
 module GemSuit
   class CLI < Thor
     module Utils
@@ -7,6 +9,12 @@ module GemSuit
       end
 
       module InstanceMethods
+      protected
+
+        def shell
+          @shell ||= Thor::Shell::Basic.new
+        end
+
       private
 
         def assert_gem_dir(non_gemsuit = false)
@@ -33,10 +41,26 @@ module GemSuit
           File.expand_path "../../../../templates", __FILE__
         end
 
+        def agree?(question, default)
+          opts   = %w(y n).collect{|x| x =~ is?(default) ? x.upcase : x}
+          answer = ask("#{question} [#{opts}]") if options.interactive?
+          answer = default.to_s if answer.empty?
+          !!(answer =~ is?(:yes))
+        end
+
+        def ask(*args)
+          shell.ask *args
+        end
+
+        def is?(*args)
+          shell.send :is?, *args
+        end
+
         alias_method :_puts, :puts
         def puts(string, force = false)
           _puts string if options.verbose? || force
         end
+
       end
 
     end

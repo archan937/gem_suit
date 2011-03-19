@@ -1,3 +1,5 @@
+require "yaml"
+
 module GemSuit
   class CLI < Thor
     module Config
@@ -11,11 +13,12 @@ module GemSuit
         FILENAME = ".suit"
 
         class Config
-          attr_accessor :filename, :hash
-
           def initialize(file)
-            @filename = filename
-            @hash     = File.exists?(filename) ? YAML.load_file(filename) : {}
+            @filename = file
+          end
+
+          def dump
+            YAML.dump hash.inject({}){|h, (k, v)| h[k.to_sym] = v; h}
           end
 
           def [](key)
@@ -27,9 +30,23 @@ module GemSuit
             dump_file
           end
 
+        private
+
+          def method_missing(method, *args)
+            if method.to_s =~ /^(\w+)\?$/
+              hash.send method, *args
+            else
+              super
+            end
+          end
+
+          def hash
+            @hash ||= ::Thor::CoreExt::HashWithIndifferentAccess.new File.exists?(@filename) ? YAML.load_file(@filename) : {}
+          end
+
           def dump_file
-            File.open filename, "w" do |file|
-              YAML.dump hash, file
+            File.open @filename, "w" do |file|
+              file << dump
             end
           end
         end
