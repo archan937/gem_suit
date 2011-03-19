@@ -20,7 +20,7 @@ module GemSuit
             application.send :"#{action}_all"
           end
 
-          puts "Done #{action.to_s[0..-2]}ing files".green if options.verbose?
+          puts "Done #{action.to_s[0..-2]}ing files".green
         end
 
         def rails(command)
