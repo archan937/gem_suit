@@ -122,7 +122,7 @@ module GemSuit
 
         def print_capybara_instructions
           return unless suit_config.capybara?
-          log File.read(File.expand_path("../capybara", __FILE__)).colorize, true
+          log File.read(File.expand_path("../builder/capybara", __FILE__)).colorize, true
         end
       end
 
