@@ -12,7 +12,7 @@ module GemSuit
         def files(action)
           assert_suit_dir
 
-          puts "(in #{File.expand_path("")})"
+          log "(in #{File.expand_path("")})"
           require "test/shared/test/test_application.rb"
           application = TestApplication.new :validate_root_path => false, :verbose => options.verbose?
           [2, 3].each do |rails_version|
@@ -20,7 +20,7 @@ module GemSuit
             application.send :"#{action}_all"
           end
 
-          puts "Done #{action.to_s[0..-2]}ing files".green
+          log "Done #{action.to_s[0..-2]}ing files".green
         end
 
         def rails(command)

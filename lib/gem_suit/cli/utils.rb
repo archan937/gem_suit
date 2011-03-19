@@ -7,6 +7,15 @@ module GemSuit
       end
 
       module InstanceMethods
+
+        def execute(command, force = nil)
+          options.verbose? || force ? system(command) : `#{command}`
+        end
+
+        def log(string, force = false)
+          puts string if options.verbose? || force
+        end
+
       private
 
         def assert_gem_dir(non_gemsuit = false)
@@ -35,15 +44,6 @@ module GemSuit
 
         def templates_path
           File.expand_path "../../../../templates", __FILE__
-        end
-
-        def execute(command, force = nil)
-          options.verbose? || force ? system(command) : `#{command}`
-        end
-
-        alias_method :_puts, :puts
-        def puts(string, force = false)
-          _puts string if options.verbose? || force
         end
 
       end

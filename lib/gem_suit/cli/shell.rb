@@ -9,7 +9,6 @@ module GemSuit
       end
 
       module InstanceMethods
-      private
 
         def shell
           @shell ||= Thor::Shell::Basic.new

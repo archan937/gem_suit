@@ -62,42 +62,7 @@ module GemSuit
 
         def create_rails_apps
           suit_config_global[:rails_versions].each do |version|
-            RailsApp.new(version).install
-            # if version == "latest" || version.to_i == 3
-            #   v = [`rails -v`.match(/\d\.\d+\.\d+/).to_s, version.match(/^\d\.\d+\.\d+$/).to_s, "3.0.5"].compact.max
-            # elsif version.match(/^\d\.\d+\.\d+$/)
-            #   v = version
-            # else
-            #   puts "Cannot generate Rails application with specified version #{version.inspect}".red, true
-            # end
-            #
-            # if answer = ask("Generate Rails #{v.to_i} application? You can specify another version or use 'n' to skip", v, v)
-            #   next if answer =~ is?(:no)
-            #   v = answer unless answer.empty?
-            #
-            #   unless v.match(/^\d\.\d+\.\d+$/)
-            #     puts "Cannot generate Rails application with specified version #{v.inspect}".red, true
-            #     next
-            #   end
-            #
-            #   dir = "test/rails-#{v.to_i}"
-            #   cmd = "rails #{v.to_i < 3 ? "_#{v}_" : "new"} dummy"
-            #
-            #   if File.exists? dir
-            #     puts "Already installed a Rails #{v.to_i} application (skipping #{v})".red, true
-            #     next
-            #   end
-            #
-            #   unless `gem list rails -i -v #{v}`.strip == "true"
-            #     puts "Installing Rails #{v} (this can take a while)".yellow, true
-            #     execute "gem install rails -v=#{v}"
-            #   end
-            #   puts "Generating Rails #{v} application"
-            #   puts cmd
-            #
-            #   FileUtils.mkdir dir
-            #   execute "cd #{dir} && #{cmd}"
-            # end
+            RailsApp.new(version, self).install
           end
         end
 
@@ -118,16 +83,16 @@ module GemSuit
         def rake_install
           return if Dir["rails_generators"].empty?
           cmd = "rake install"
-          puts "Running 'rake install' in order to be able to run the Rails 2 generators".green
-          puts cmd
+          log "Running 'rake install' in order to be able to run the Rails 2 generators".green
+          log cmd
           `#{cmd}`
         end
 
         def ask_mysql_password
           return unless suit_config.mysql?
-          puts "Setting up the MySQL test database".green
-          puts "To be able to run integration tests (with Capybara in Firefox) we need to store your MySQL password in a git-ignored file (test/shared/mysql)"
-          puts "Please provide the password of your MySQL root user: (press Enter when blank)", true
+          log "Setting up the MySQL test database".green
+          log "To be able to run integration tests (with Capybara in Firefox) we need to store your MySQL password in a git-ignored file (test/shared/mysql)"
+          log "Please provide the password of your MySQL root user: (press Enter when blank)", true
 
           begin
             system "stty -echo"
@@ -141,15 +106,15 @@ module GemSuit
             File.delete file if File.exists? file
           else
             File.open(file, "w"){|f| f << password}
-            puts "\n"
+            log "\n"
           end
         end
 
         def create_test_database
           return unless suit_config.mysql?
 
-          # puts "Creating the test database".green
-          # puts "cd test/rails-3/dummy && RAILS_ENV=test rake db:create"
+          # log "Creating the test database".green
+          # log "cd test/rails-3/dummy && RAILS_ENV=test rake db:create"
           #
           # require "test/rails-3/dummy/test/support/dummy_app.rb"
           # DummyApp.create_test_database
@@ -157,7 +122,7 @@ module GemSuit
 
         def print_capybara_instructions
           return unless suit_config.capybara?
-          puts File.read(File.expand_path("../capybara", __FILE__)).colorize, true
+          log File.read(File.expand_path("../capybara", __FILE__)).colorize, true
         end
       end
 

@@ -1,5 +1,4 @@
 require "thor"
-require "yaml"
 require "rich/support/core/string/colorize"
 require "gem_suit/cli/utils"
 require "gem_suit/cli/shell"
@@ -61,7 +60,7 @@ module GemSuit
       case env
       when "global"
         if options.empty?
-          puts suit_config_global.dump, true
+          log suit_config_global.dump, true
         else
           options.reject{|k, v| !global_options.include? k.to_sym}.each do |key, value|
             suit_config_global[key] = value
@@ -70,7 +69,7 @@ module GemSuit
       when nil
         assert_suit_dir
         if options.empty?
-          puts suit_config.dump, true
+          log suit_config.dump, true
         else
           options.reject{|k, v| global_options.include? k.to_sym}.each do |key, value|
             suit_config[key] = value

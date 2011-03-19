@@ -7,8 +7,9 @@ module GemSuit
       class RailsApp
         include Shell
 
-        def initialize(version_spec)
+        def initialize(version_spec, builder)
           @version_spec = version_spec
+          @builder      = builder
         end
 
         def install
@@ -19,6 +20,14 @@ module GemSuit
 
       private
 
+        def method_missing(method, *args)
+          if @builder.respond_to? method
+            @builder.send method, *args
+          else
+            super
+          end
+        end
+
         def expand_version_spec
           @version_spec == "latest" ? latest : @version_spec
         end
@@ -28,17 +37,17 @@ module GemSuit
         end
 
         def target_dir
-          "test/rails-#{version[:major]}"
+          "test/rails-#{version(:major)}"
         end
 
         def generate_cmd
-          "rails #{version[:major] ? "_#{version}_" : "new"} dummy"
+          "rails #{version(:major) < 3 ? "_#{version}_" : "new"} dummy"
         end
 
         def version(segment = nil)
           return @version if segment.nil?
 
-          segments = @version.match(/^(\d+)\.(\d+)\.(\d+)$/).captures.collect &:to_i
+          segments = @version.match(/(\d+)\.(\d+)\.(\d+)/).captures.collect &:to_i
           case segment
           when :major
             segments[0]
@@ -55,7 +64,7 @@ module GemSuit
 
         def confirm_version
           @version = expand_version_spec
-          if answer = ask("Generate Rails #{version[:major]} application? You can specify another version or use 'n' to skip", version, version)
+          if answer = ask("Generate Rails #{version(:major)} application? You can specify another version or use 'n' to skip", version, version)
             return if answer =~ is?(:no)
             @version = answer unless answer.empty?
           end
@@ -63,23 +72,23 @@ module GemSuit
 
         def generate
           unless valid_version?
-            puts "Cannot generate Rails application with specified version #{version.inspect}".red
+            log "Cannot generate Rails application with specified version #{version.inspect}".red
             return
           end
 
           if File.exists? target_dir
-            puts "Already installed a Rails #{version[:major]} application (skipping #{version})".red, true
+            log "Already installed a Rails #{version(:major)} application (skipping #{version})".red, true
             return
           end
 
           unless `gem list rails -i -v #{version}`.strip == "true"
-            puts "Installing Rails #{version} (this can take a while)".yellow, true
+            log "Installing Rails #{version} (this can take a while)".yellow, true
             execute "gem install rails -v=#{version}"
           end
 
           FileUtils.mkdir target_dir
-          puts "Generating Rails #{version} application"
-          puts generate_cmd
+          log "Generating Rails #{version(:major)} application"
+          log generate_cmd
           execute "cd #{target_dir} && #{generate_cmd}"
         end
 
