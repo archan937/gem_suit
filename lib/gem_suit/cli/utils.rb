@@ -38,12 +38,16 @@ module GemSuit
           File.expand_path "../../../..", __FILE__
         end
 
-        def suit_path
-          File.expand_path "#{suit_gem_path}/suit", __FILE__
+        def templates_path
+          File.expand_path "templates", suit_gem_path
         end
 
-        def templates_path
-          File.expand_path "../../../../templates", __FILE__
+        def static_templates
+          File.expand_path "static", templates_path
+        end
+
+        def dynamic_templates
+          File.expand_path "dynamic", templates_path
         end
 
       end

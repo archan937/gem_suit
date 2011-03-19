@@ -19,7 +19,7 @@ module GemSuit
 
         def create_shared_assets
           stash_test_suites
-          FileUtils.cp_r File.expand_path(suit_path, "."), "test"
+          FileUtils.cp_r File.join(static_templates, "."), "."
           move_test_suits
         end
 
