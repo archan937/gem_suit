@@ -30,8 +30,7 @@ module GemSuit
           command   = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[options.version]
 
           require "test/rails-#{options.version}/dummy/test/test_application.rb"
-          application = TestApplication.new :verbose => options.verbose?
-          application.bundle_install
+          TestApplication.new(:verbose => options.verbose?).bundle_install
 
           system "cd #{root_path} && #{command}"
         end
