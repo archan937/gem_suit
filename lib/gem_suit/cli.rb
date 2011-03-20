@@ -25,8 +25,7 @@ module GemSuit
 
     class Error < StandardError; end
 
-    include Utils
-    include Shell
+    include Base
     include Config
     include Builder
     include Application

@@ -1,13 +1,11 @@
-require "gem_suit/cli/shell"
-require "gem_suit/cli/utils"
+require "gem_suit/cli/base"
 
 module GemSuit
   class CLI < Thor
     module Builder
 
       class RailsApp
-        include Shell
-        # include Utils
+        include Base
 
         def initialize(version_spec, builder)
           @version_spec = version_spec
