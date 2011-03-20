@@ -9,4 +9,6 @@ group :test do
   gem "mysql"
   gem "shoulda"
   gem "mocha"
+  gem "capybara"
+  gem "launchy"
 end
