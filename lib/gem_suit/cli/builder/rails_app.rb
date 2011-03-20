@@ -88,6 +88,8 @@ module GemSuit
         end
 
         def confirm_version
+          return if @confirmed_version
+
           @version = expand_version_spec
           answer   = ask "Generate Rails #{version(:major)} application? You can specify another version or use 'n' to skip", version, version
           if answer =~ is?(:no)
@@ -95,7 +97,9 @@ module GemSuit
             return
           end
           @version = answer unless answer.empty?
+
           self.destination_root = rails_root
+          @confirmed_version    = true
         end
 
         def generate
