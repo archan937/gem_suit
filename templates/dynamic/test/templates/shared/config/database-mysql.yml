@@ -7,5 +7,5 @@ test:
   adapter: mysql
   database: <%= gem_name %>_test
   username: root
-  password: <%= "<%= mysql_password %>" %>
+  password: <%%= mysql_password %>
   host: 127.0.0.1
