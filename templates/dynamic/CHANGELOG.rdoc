@@ -1,4 +1,4 @@
-= <%= gem_name %> CHANGELOG
+= <%= camelize gem_name %> CHANGELOG
 
 == Version 0.0.1 (<%= Time.now.strftime "%B xxx, %Y" %>)
 

@@ -1,4 +1,4 @@
-h1. <%= classified_gem_name %>
+h1. <%= camelize gem_name %>
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.
 
@@ -26,7 +26,7 @@ h2. License
 
 Copyright (c) <%= Time.now.strftime "%Y" %> <%= author %>, released under the MIT license
 
-"http://twitter.com/<%= twitter %>":http://twitter.com/<%= twitter_name %> – "<%= email %>":mailto:<%= email %>
+<% unless twitter.empty? %>"http://twitter.com/<%= twitter %>":http://twitter.com/<%= twitter %> – <% end %>"<%= email %>":mailto:<%= email %>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

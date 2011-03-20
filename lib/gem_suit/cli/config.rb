@@ -11,8 +11,6 @@ module GemSuit
       end
 
       module InstanceMethods
-      private
-
         def suit_config_global
           @suit_config_global ||= Config::Hash.new File.expand_path(FILENAME, suit_gem_path)
         end

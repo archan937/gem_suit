@@ -95,7 +95,7 @@ module GemSuit
             return
           end
           @version = answer unless answer.empty?
-          destination_root = rails_root
+          self.destination_root = rails_root
         end
 
         def generate
