@@ -42,11 +42,11 @@ module GemSuit
           File.expand_path "templates", suit_gem_path
         end
 
-        def static_templates
+        def static_templates_path
           File.expand_path "static", templates_path
         end
 
-        def dynamic_templates
+        def dynamic_templates_path
           File.expand_path "dynamic", templates_path
         end
 
