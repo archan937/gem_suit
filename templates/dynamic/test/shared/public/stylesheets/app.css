@@ -53,12 +53,12 @@ textarea {
   padding-top: 80px;
   clear: both; }
 
+#page div.content h1 {
+  margin-bottom: 35px; }
+
 #page div.content div.left {
   width: 515px;
   float: left; }
-
-#page div.content div.left h1 {
-  margin-bottom: 35px; }
 
 #page div.content div.left h3 {
   font-size: 22px;
@@ -67,7 +67,7 @@ textarea {
 #page div.content div.left p {
   margin-bottom: 30px;
   font-size: 18px;
-  line-height: 150%; }
+  line-height: 140%; }
 
 #page div.content div.left form label {
   display: block;

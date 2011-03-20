@@ -54,13 +54,6 @@ module GemSuit
           FileUtils.rmdir TEMP_DIR if File.exists? TEMP_DIR
         end
 
-        def configure_suit
-          suit_config_global[:rails_versions] ||= %w(2.3.11 latest)
-          suit_config[:mysql]    = options.key?(:mysql)    ? options.mysql    : agree?("Do you want to use a MySQL test database?", :no)
-          suit_config[:capybara] = options.key?(:capybara) ? options.capybara : agree?("Do you want to use Capybara for testing?" , :yes)
-          suit_config[:version]  = GemSuit::VERSION::STRING
-        end
-
         def create_rails_apps
           suit_config_global[:rails_versions].each do |version|
             Builder::RailsApp.new(version, self).install
@@ -110,11 +103,12 @@ module GemSuit
         def create_test_database
           return unless suit_config.mysql?
 
-          # log "Creating the test database".green
-          # log "cd test/rails-3/dummy && RAILS_ENV=test rake db:create"
-          #
-          # require "test/rails-3/dummy/test/support/dummy_app.rb"
-          # DummyApp.create_test_database
+          rails_root = Dir["test/rails-*/dummy"].max
+          log "Creating the test database".green
+          log "cd #{rails_root} && RAILS_ENV=test rake db:create"
+
+          require File.expand_path("test/test_application.rb", rails_root)
+          TestApplication.create_test_database
         end
 
         def print_capybara_instructions

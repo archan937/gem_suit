@@ -8,7 +8,7 @@ require "gem_suit/cli/test"
 require "gem_suit/version"
 
 # + suit tailor
-# - suit up
+# + suit up
 # - suit fit (setup)
 # + suit restore
 # + suit write
@@ -32,14 +32,19 @@ module GemSuit
     include Test
 
     desc "tailor NAME", "Generate a Bundler gem and provide it with GemSuit"
-    method_options [:interactive, "-i"] => false, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
+    method_options [:interactive, "-i"] => false, [:extras, "-e"] => true, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def tailor(name)
       execute "bundle gem #{name}"
-      system  "cd #{name} && suit up #{options.collect{|k, v| "--#{k}" if v}.join(" ")}"
+
+      opts = options.collect do |key, value|
+        ["-", ("-no" unless value), "-#{key}"].compact.join "" if [:interactive, :extras, :mysql, :capybara, :verbose].include?(key.to_sym)
+      end.compact.join " "
+
+      system "cd #{name} && suit up #{opts}"
     end
 
     desc "up", "Provide an existing gem with GemSuit"
-    method_options [:interactive, "-i"] => false, [:extensive, "-e"] => true, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
+    method_options [:interactive, "-i"] => false, [:extras, "-e"] => true, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def up
       assert_gem_dir true
       create_shared_assets
@@ -47,12 +52,17 @@ module GemSuit
       create_rails_apps
       generate_files
       git_ignore
-      system "suit fit #{options.collect{|k, v| "--#{k}" if [:mysql, :capybara].include?(k.to_sym) && v}.join(" ")}"
+
+      opts = options.collect do |key, value|
+        ["-", ("-no" unless value), "-#{key}"].compact.join "" if [:verbose].include?(key.to_sym)
+      end.compact.join " "
+
+      system "suit fit #{opts}"
     end
 
     desc "config [global]", "Configure GemSuit within your gem (use `suit config global` for global config)"
     method_options [:rails_versions, "-r"] => :array, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean
-    def config(env)
+    def config(env = nil)
       global_options = [:rails_versions]
       case env
       when "global"
