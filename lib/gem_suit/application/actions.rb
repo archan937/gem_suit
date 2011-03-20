@@ -4,7 +4,7 @@ require "rich/support/core/string/colorize"
 require "gem_suit/application/utils"
 
 module GemSuit
-  class Application < ::Thor::Group
+  class Application < ::Thor
     module Actions
 
       def self.included(base)

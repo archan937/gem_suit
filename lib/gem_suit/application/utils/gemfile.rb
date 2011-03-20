@@ -1,5 +1,5 @@
 module GemSuit
-  class Application < ::Thor::Group
+  class Application < ::Thor
     module Utils
       class Gemfile
 

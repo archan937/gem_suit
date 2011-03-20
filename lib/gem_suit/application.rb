@@ -1,8 +1,8 @@
-require "thor/group"
+require "thor"
 require "gem_suit/application/actions"
 
 module GemSuit
-  class Application < ::Thor::Group
+  class Application < ::Thor
     include Application::Actions
 
     STASHED_EXT = "stashed"

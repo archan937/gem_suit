@@ -1,7 +1,7 @@
 require "gem_suit/application/utils/gemfile"
 
 module GemSuit
-  class Application < ::Thor::Group
+  class Application < ::Thor
     module Utils
 
       def self.included(base)
