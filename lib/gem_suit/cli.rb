@@ -1,7 +1,6 @@
 require "thor"
 require "rich/support/core/string/colorize"
-require "gem_suit/cli/utils"
-require "gem_suit/cli/shell"
+require "gem_suit/cli/base"
 require "gem_suit/cli/config"
 require "gem_suit/cli/builder"
 require "gem_suit/cli/application"

@@ -1,4 +1,5 @@
 require "gem_suit/cli/shell"
+require "gem_suit/cli/utils"
 
 module GemSuit
   class CLI < Thor
@@ -6,6 +7,7 @@ module GemSuit
 
       class RailsApp
         include Shell
+        # include Utils
 
         def initialize(version_spec, builder)
           @version_spec = version_spec
@@ -20,12 +22,8 @@ module GemSuit
 
       private
 
-        def method_missing(method, *args)
-          if @builder.respond_to? method
-            @builder.send method, *args
-          else
-            super
-          end
+        def options
+          @builder.options
         end
 
         def expand_version_spec
