@@ -1,21 +1,29 @@
+require "thor"
 require "gem_suit/cli/base"
 
 module GemSuit
   class CLI < Thor
     module Builder
 
-      class RailsApp
+      class RailsApp < Thor
+        include Thor::Actions
         include Base
+
+        def self.source_root
+          dynamic_templates_path
+        end
 
         def initialize(version_spec, builder)
           @version_spec = version_spec
           @builder      = builder
         end
 
-        def install
-          return unless confirm_version
-          generate
-          bundle
+        no_tasks do
+          def install
+            confirm_version
+            generate
+            bundle
+          end
         end
 
       private
@@ -33,7 +41,7 @@ module GemSuit
         end
 
         def target_dir
-          "test/rails-#{version(:major)}"
+          File.expand_path "test/rails-#{version(:major)}"
         end
 
         def generate_cmd
@@ -58,12 +66,16 @@ module GemSuit
           !!version.match(/^\d+\.\d+\.\d+$/)
         end
 
+        def bundled?
+          !Dir[File.expand_path("Gemfile", target_dir)].empty?
+        end
+
         def confirm_version
           @version = expand_version_spec
-          if answer = ask("Generate Rails #{version(:major)} application? You can specify another version or use 'n' to skip", version, version)
-            return if answer =~ is?(:no)
-            @version = answer unless answer.empty?
-          end
+          answer   = ask("Generate Rails #{version(:major)} application? You can specify another version or use 'n' to skip", version, version)
+          return if answer =~ is?(:no)
+          @version = answer unless answer.empty?
+          self.class.source_root = version
         end
 
         def generate
@@ -89,7 +101,15 @@ module GemSuit
         end
 
         def bundle
+          unless valid_version?
+            log "Cannot bundle Rails application with specified version #{version.inspect}".red
+            return
+          end
 
+          return if bundled?
+
+          # adjust config/boot.rb
+          # create config/preinitializer.rb
         end
       end
 
