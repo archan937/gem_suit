@@ -1,5 +1,4 @@
 require "pathname"
-require "fileutils"
 require "rich/support/core/string/colorize"
 require "gem_suit/application/utils"
 
