@@ -91,27 +91,27 @@ module GemSuit
     desc "restore", "Restore all files within the GemSuit test applications"
     method_options [:verbose, "-v"] => false
     def restore
-      files :restore, options.verbose?
+      files :restore
     end
 
     desc "write", "Write all files within the GemSuit test applications"
     method_options [:verbose, "-v"] => false
     def write
-      files :write, options.verbose?
+      files :write
     end
 
     desc "server", "Start one of the GemSuit test application servers"
     method_options [:version, "-v"] => 3
     map "s" => :server
     def server
-      rails :server, options.version
+      rails :server
     end
 
     desc "console", "Start one of the GemSuit test application consoles"
     method_options [:version, "-v"] => 3
     map "c" => :console
     def console
-      rails :console, options.version
+      rails :console
     end
 
   private
