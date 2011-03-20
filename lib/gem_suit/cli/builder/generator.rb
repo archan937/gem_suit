@@ -82,8 +82,13 @@ module GemSuit
               template "README.textile", :verbose => false
             end
 
-            gsub_file "#{gem_name}.gemspec", /.*/, locals[:email ], :verbose => false unless locals[:email ].to_s.empty?
-            gsub_file "#{gem_name}.gemspec", /.*/         , locals[:author], :verbose => false unless locals[:author].to_s.empty?
+            gemspec = File.read "#{gem_name}.gemspec"
+            gemspec.gsub! "TODO: Write your email address", email  unless email .to_s.empty?
+            gemspec.gsub! "TODO: Write your name"         , author unless author.to_s.empty?
+
+            File.open "#{gem_name}.gemspec", "w" do |file|
+              file << gemspec
+            end
           end
 
           template "test/shared/test/test_helper.rb", :verbose => false
