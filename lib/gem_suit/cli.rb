@@ -39,14 +39,13 @@ module GemSuit
     end
 
     desc "up", "Provide an existing gem with GemSuit"
-    method_options [:interactive, "-i"] => false, [:extensive, "-e"] => :boolean, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
+    method_options [:interactive, "-i"] => false, [:extensive, "-e"] => :true, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def up
       assert_gem_dir true
       create_shared_assets
       configure_suit
       create_rails_apps
-      write_templates
-      create_symlinks
+      generate_files
       git_ignore
       system "suit fit #{options.collect{|k, v| "--#{k}" if [:mysql, :capybara].include?(k.to_sym) && v}.join(" ")}"
     end

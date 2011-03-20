@@ -1,5 +1,6 @@
 require "fileutils"
 require "gem_suit/cli/builder/rails_app"
+require "gem_suit/cli/builder/generator"
 
 module GemSuit
   class CLI < Thor
@@ -62,16 +63,12 @@ module GemSuit
 
         def create_rails_apps
           suit_config_global[:rails_versions].each do |version|
-            RailsApp.new(version, self).install
+            Builder::RailsApp.new(version, self).install
           end
         end
 
-        def write_templates
-          # template "Gemfile", "target"
-        end
-
-        def create_symlinks
-          # ln -s test
+        def generate_files
+          Builder::Generator.new(self).run
         end
 
         def git_ignore

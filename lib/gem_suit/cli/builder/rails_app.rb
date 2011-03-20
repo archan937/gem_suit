@@ -43,7 +43,7 @@ module GemSuit
           end
         end
 
-      protected
+      private
 
         def expand_version_spec
           @version_spec == "latest" ? latest : @version_spec
@@ -89,13 +89,13 @@ module GemSuit
 
         def confirm_version
           @version = expand_version_spec
-          answer   = ask("Generate Rails #{version(:major)} application? You can specify another version or use 'n' to skip", version, version)
+          answer   = ask "Generate Rails #{version(:major)} application? You can specify another version or use 'n' to skip", version, version
           if answer =~ is?(:no)
             @version = nil
             return
           end
           @version = answer unless answer.empty?
-          self.destination_root = rails_root
+          destination_root = rails_root
         end
 
         def generate
@@ -128,12 +128,12 @@ module GemSuit
 
           return if bundled?
 
-          insert_into_file "config/boot.rb", File.read(File.expand_path("../boot", __FILE__)), :before => "# All that for this:\n"
+          insert_into_file "config/boot.rb", File.read(File.expand_path("../boot", __FILE__)), :before => "# All that for this:\n", :verbose => false
           template "config/preinitializer.rb", :verbose => false
         end
 
         def create_gemfile
-          template "Gemfile"#, :verbose => false
+          template "Gemfile", :force => true, :verbose => false
         end
       end
 
