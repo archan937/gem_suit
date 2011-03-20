@@ -9,13 +9,11 @@ module GemSuit
         include Thor::Actions
         include Base
 
-        def self.source_root
-          dynamic_templates_path
-        end
-
-        def initialize(version_spec, builder)
-          @version_spec = version_spec
-          @builder      = builder
+        def initialize(version_spec, builder, confirm = true)
+          @version_spec          = version_spec
+          @builder               = builder
+          self.class.source_root = dynamic_templates_path
+          confirm_version if confirm
         end
 
         no_tasks do
@@ -23,14 +21,29 @@ module GemSuit
             confirm_version
             generate
             bundle
+            create_gemfile
+          end
+
+          def options
+            @builder.options
+          end
+
+          def rails_gem_version
+            version
           end
         end
 
-      private
+        class << self
+          def source_root
+            @source_root
+          end
 
-        def options
-          @builder.options
+          def source_root=(path)
+            @source_root = path
+          end
         end
+
+      protected
 
         def expand_version_spec
           @version_spec == "latest" ? latest : @version_spec
@@ -42,6 +55,10 @@ module GemSuit
 
         def target_dir
           File.expand_path "test/rails-#{version(:major)}"
+        end
+
+        def rails_root
+          File.expand_path("dummy", target_dir)
         end
 
         def generate_cmd
@@ -67,15 +84,18 @@ module GemSuit
         end
 
         def bundled?
-          !Dir[File.expand_path("Gemfile", target_dir)].empty?
+          !Dir[File.expand_path("Gemfile", destination_root)].empty?
         end
 
         def confirm_version
           @version = expand_version_spec
           answer   = ask("Generate Rails #{version(:major)} application? You can specify another version or use 'n' to skip", version, version)
-          return if answer =~ is?(:no)
+          if answer =~ is?(:no)
+            @version = nil
+            return
+          end
           @version = answer unless answer.empty?
-          self.class.source_root = version
+          self.destination_root = rails_root
         end
 
         def generate
@@ -108,8 +128,12 @@ module GemSuit
 
           return if bundled?
 
-          # adjust config/boot.rb
-          # create config/preinitializer.rb
+          insert_into_file "config/boot.rb", File.read(File.expand_path("../boot", __FILE__)), :before => "# All that for this:\n"
+          template "config/preinitializer.rb", :verbose => false
+        end
+
+        def create_gemfile
+          template "Gemfile"#, :verbose => false
         end
       end
 

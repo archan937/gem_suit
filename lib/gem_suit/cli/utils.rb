@@ -34,6 +34,10 @@ module GemSuit
           end
         end
 
+        def gem_name
+          File.basename File.expand_path("")
+        end
+
         def suit_gem_path
           File.expand_path "../../../..", __FILE__
         end
