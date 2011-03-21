@@ -14,6 +14,10 @@ module GemSuit
       end
 
       module ClassMethods
+        def create_test_database
+          self.new(:verbose => false).create_test_database
+        end
+
         def setup(*args)
           self.new.setup *args
         end
@@ -29,6 +33,13 @@ module GemSuit
 
       module InstanceMethods
         attr_accessor :config, :verbose
+
+        def create_test_database
+          write   "config/database.yml"
+          execute "RAILS_ENV=test rake db:create"
+        ensure
+          restore "**/*.#{STASHED_EXT}"
+        end
 
         def setup(config = {})
           @config = config
@@ -177,7 +188,9 @@ module GemSuit
           new_files = []
 
           ["shared", "rails-#{rails_version}"].each do |dir|
-            root = Pathname.new File.expand_path(dir, templates_path)
+            path = File.expand_path dir, templates_path
+            next unless File.exists? path
+            root = Pathname.new path
             Dir[File.expand_path(string, root.realpath)].each do |file|
               next if File.directory? file
               begin
