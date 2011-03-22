@@ -20,6 +20,19 @@ module GemSuit
       module InstanceMethods
         attr_accessor :root_path, :validate_root_path
 
+        def execute(command, text = "")
+          return if command.to_s.gsub(/\s/, "").size == 0
+          log :executing, "#{command} #{text}"
+          `cd #{root_path} && #{command}`
+        end
+
+        def log(action, string = nil)
+          return unless verbose
+          output = [string || action]
+          output.unshift action.to_s.capitalize.ljust(10, " ") unless string.nil?
+          puts output.join("  ")
+        end
+
         def root_path
           (@root_path || (defined?(Rails) ? Rails.root : File.expand_path("../..", self.class.__file__)).to_s).tap do |path|
             validate_root_path! path if validate_root_path
@@ -71,9 +84,9 @@ module GemSuit
         def rails_gem_version
           case rails_version
           when 2
-            File.readlines(expand_path("config/environment.rb")).detect do |line|
+            File.readlines(expand_path("config/environment.rb")).each do |line|
               match = line.match /RAILS_GEM_VERSION\s*=\s*["']([\d\.]+)["']/
-              match.captures[0] if match
+              return $1 if match
             end
           when 3
             files = [expand_path(stashed("Gemfile")), expand_path("Gemfile")]
