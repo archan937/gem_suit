@@ -81,7 +81,7 @@ module GemSuit
         def ask_mysql_password
           return unless suit_config.mysql?
           log "Setting up the MySQL test database".green
-          log "To be able to run integration tests (with Capybara in Firefox) we need to store your MySQL password in a git-ignored file (test/shared/mysql)"
+          log "To be able to run integration tests (with Capybara in Firefox) we need to store your MySQL password in a git-ignored file (suit/shared/mysql)"
           log "Please provide the password of your MySQL root user: (press Enter when blank)", true
 
           begin
@@ -91,7 +91,7 @@ module GemSuit
             system "stty echo"
           end
 
-          file = "test/shared/mysql"
+          file = "suit/shared/mysql"
           if password.length == 0
             File.delete file if File.exists? file
           else
@@ -103,7 +103,7 @@ module GemSuit
         def create_test_database
           return unless suit_config.mysql?
 
-          rails_root = Dir["test/rails-*/dummy"].max
+          rails_root = Dir["suit/rails-*/dummy"].max
           log "Creating the test database".green
           log "cd #{rails_root} && RAILS_ENV=test rake db:create"
 

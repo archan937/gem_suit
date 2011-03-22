@@ -72,11 +72,11 @@ module GemSuit
         end
 
         def create_symlinks
-          rails_root = Dir["test/rails-*/dummy"].max
+          rails_root = Dir["suit/rails-*/dummy"].max
           FileUtils.rm   File.expand_path("public/index.html", rails_root)
-          FileUtils.cp_r File.expand_path("public", rails_root), "test/shared"
+          FileUtils.cp_r File.expand_path("public", rails_root), "suit/shared"
 
-          Dir["test/rails-*/dummy"].each do |rails_root|
+          Dir["suit/rails-*/dummy"].each do |rails_root|
             %w(app/models
                app/views
                db/schema.rb
@@ -122,7 +122,7 @@ module GemSuit
             end
           end
 
-          Dir["test/rails-*/dummy"].each do |rails_root|
+          Dir["suit/rails-*/dummy"].each do |rails_root|
             file   = File.expand_path("config/routes.rb", rails_root)
             routes = File.readlines file
             routes.each_with_index do |line, index|
@@ -142,11 +142,11 @@ module GemSuit
             file << gemspec
           end
 
-          template "test/shared/app/views/application/index.html.erb", :verbose => false
-          template "test/shared/public/stylesheets/app.css", :force => true, :verbose => false
+          template "suit/shared/app/views/application/index.html.erb", :verbose => false
+          template "suit/shared/public/stylesheets/app.css", :force => true, :verbose => false
           template "test/shared/test/test_helper.rb", :verbose => false
-          template "test/templates/shared/Gemfile", :verbose => false
-          template "test/templates/shared/config/database-#{suit_config[:mysql] ? "mysql" : "sqlite"}.yml", "test/templates/shared/config/database.yml", :verbose => false
+          template "suit/templates/shared/Gemfile", :verbose => false
+          template "suit/templates/shared/config/database-#{suit_config[:mysql] ? "mysql" : "sqlite"}.yml", "suit/templates/shared/config/database.yml", :verbose => false
         end
 
       end

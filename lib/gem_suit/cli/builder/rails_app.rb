@@ -54,7 +54,7 @@ module GemSuit
         end
 
         def target_dir
-          File.expand_path "test/rails-#{version(:major)}"
+          File.expand_path "suit/rails-#{version(:major)}"
         end
 
         def rails_root

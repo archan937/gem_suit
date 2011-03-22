@@ -45,7 +45,7 @@ module GemSuit
             def test_rails(major_version)
               system "rake restore"
               # %w(non_authenticated authenticated/devise authenticated/authlogic).each do |file|
-              #   execute "ruby test/rails-#{major_version}/dummy/test/integration/#{file}.rb"
+              #   execute "ruby suit/rails-#{major_version}/dummy/test/integration/#{file}.rb"
               # end
             end
             alias_method :rails, :test_rails

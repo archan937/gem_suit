@@ -13,10 +13,10 @@ module GemSuit
           assert_suit_dir
 
           log "(in #{File.expand_path("")})"
-          require "test/shared/test/test_application.rb"
+          require "suit/shared/test/test_application.rb"
           application = TestApplication.new :validate_root_path => false, :verbose => options.verbose?
           [2, 3].each do |rails_version|
-            application.root_path = File.expand_path "test/rails-#{rails_version}/dummy"
+            application.root_path = File.expand_path "suit/rails-#{rails_version}/dummy"
             application.send :"#{action}_all"
           end
 
@@ -26,10 +26,10 @@ module GemSuit
         def rails(command)
           assert_suit_dir
 
-          root_path = File.expand_path "test/rails-#{options.version}/dummy"
+          root_path = File.expand_path "suit/rails-#{options.version}/dummy"
           command   = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[options.version]
 
-          require "test/rails-#{options.version}/dummy/test/test_application.rb"
+          require "suit/rails-#{options.version}/dummy/test/test_application.rb"
           TestApplication.new(:verbose => options.verbose?).bundle_install
 
           system "cd #{root_path} && #{command}"
