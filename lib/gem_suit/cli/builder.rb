@@ -37,7 +37,7 @@ module GemSuit
           Dir["#{TEMP_DIR}/#{TEST_SUITS}"].each do |dir|
             if File.basename(dir) == "test"
               Dir["#{dir}/*"].each do |entry|
-                destination = File.expand_path "test/shared/test"
+                destination = File.expand_path "suit/shared/test"
                 if %w(fixtures integration unit).include? File.basename(entry)
                   FileUtils.rm_rf File.expand_path(File.basename(entry), destination)
                 end
@@ -45,7 +45,7 @@ module GemSuit
               end
               FileUtils.rmdir dir
             else
-              destination = File.expand_path "test/shared/#{File.basename(dir)}"
+              destination = File.expand_path "suit/shared/#{File.basename(dir)}"
               FileUtils.rm destination if File.exists? destination
               FileUtils.mv dir, destination
             end

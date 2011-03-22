@@ -13,7 +13,7 @@ module GemSuit
           assert_suit_dir
 
           log "(in #{File.expand_path("")})"
-          require "test/shared/test/test_application.rb"
+          require "suit/shared/test/test_application.rb"
           application = TestApplication.new :validate_root_path => false, :verbose => options.verbose?
           [2, 3].each do |rails_version|
             application.root_path = File.expand_path "suit/rails-#{rails_version}/dummy"

@@ -144,7 +144,7 @@ module GemSuit
 
           template "suit/shared/app/views/application/index.html.erb", :verbose => false
           template "suit/shared/public/stylesheets/app.css", :force => true, :verbose => false
-          template "test/shared/test/test_helper.rb", :verbose => false
+          template "suit/shared/test/test_helper.rb", :verbose => false
           template "suit/templates/shared/Gemfile", :verbose => false
           template "suit/templates/shared/config/database-#{suit_config[:mysql] ? "mysql" : "sqlite"}.yml", "suit/templates/shared/config/database.yml", :verbose => false
         end
