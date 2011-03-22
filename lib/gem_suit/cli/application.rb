@@ -9,6 +9,15 @@ module GemSuit
       module InstanceMethods
       private
 
+        def test_suit
+          system "suit restore"
+          options.rails_versions.each do |rails_version|
+            Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/*.rb"].each do |file|
+              execute "ruby #{file}"
+            end
+          end
+        end
+
         def files(action)
           assert_suit_dir
 
@@ -26,10 +35,10 @@ module GemSuit
         def rails(command)
           assert_suit_dir
 
-          root_path = File.expand_path "suit/rails-#{options.version}/dummy"
-          command   = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[options.version]
+          root_path = File.expand_path "suit/rails-#{options.rails_version}/dummy"
+          command   = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[options.rails_version]
 
-          require "suit/rails-#{options.version}/dummy/test/test_application.rb"
+          require "suit/rails-#{options.rails_version}/dummy/test/test_application.rb"
           TestApplication.new(:verbose => options.verbose?).bundle_install
 
           system "cd #{root_path} && #{command}"

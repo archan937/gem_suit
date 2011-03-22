@@ -31,6 +31,8 @@ module GemSuit
     include Application
     include Test
 
+    default_task :test
+
     desc "tailor NAME", "Generate a Bundler gem and provide it with GemSuit"
     method_options [:interactive, "-i"] => false, [:extras, "-e"] => true, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean, [:verbose, "-v"] => false
     def tailor(name)
@@ -109,15 +111,21 @@ module GemSuit
       files :write
     end
 
+    desc "test", "Run GemSuit tests"
+    method_options [:rails_versions, "-r"] => [2, 3], [:verbose, "-v"] => true
+    def test
+      test_suit
+    end
+
     desc "server", "Start one of the GemSuit test application servers"
-    method_options [:version, "-v"] => 3
+    method_options [:rails_version, "-r"] => 3
     map "s" => :server
     def server
       rails :server
     end
 
     desc "console", "Start one of the GemSuit test application consoles"
-    method_options [:version, "-v"] => 3
+    method_options [:rails_version, "-r"] => 3
     map "c" => :console
     def console
       rails :console
