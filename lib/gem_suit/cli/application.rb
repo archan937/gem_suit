@@ -10,7 +10,9 @@ module GemSuit
       private
 
         def test_suit
-          system "suit restore"
+          assert_suit_dir
+
+          execute "suit restore"
           options.rails_versions.each do |rails_version|
             Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/*.rb"].each do |file|
               execute "ruby #{file}"

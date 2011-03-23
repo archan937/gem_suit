@@ -14,11 +14,10 @@ require "gem_suit/version"
 # + suit write
 # + suit server
 # + suit console
-# ! suit test
+# > suit test (integrator)
 # - suit test:unit
 # - suit test:functionals
 # - suit test:integration
-# - suit test:suit (integrator)
 
 module GemSuit
   class CLI < Thor
