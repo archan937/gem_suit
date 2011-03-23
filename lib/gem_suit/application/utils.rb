@@ -20,17 +20,12 @@ module GemSuit
       module InstanceMethods
         attr_accessor :root_path, :validate_root_path
 
-        def execute(command, text = "")
-          return if command.to_s.gsub(/\s/, "").size == 0
-          log :executing, "#{command} #{text}"
-          `cd #{root_path} && #{command}`
-        end
-
-        def log(action, string = nil)
-          return unless verbose
-          output = [string || action]
-          output.unshift action.to_s.capitalize.ljust(10, " ") unless string.nil?
-          puts output.join("  ")
+        def validate_root_path!(path)
+          unless path.match(/rails-\d/)
+            puts caller
+            log "Running a #{self.class.name} instance from an invalid path: '#{path}' needs to match ".red + "/rails-\\d/".yellow
+            exit
+          end
         end
 
         def root_path
@@ -73,14 +68,6 @@ module GemSuit
           root_path.match(/\/rails-(\d)\//)[1].to_i
         end
 
-        def validate_root_path!(path)
-          unless path.match(/rails-\d/)
-            puts caller
-            log "Running a #{self.class.name} instance from an invalid path: '#{path}' needs to match ".red + "/rails-\\d/".yellow
-            exit
-          end
-        end
-
         def rails_gem_version
           case rails_version
           when 2
@@ -97,6 +84,19 @@ module GemSuit
         def mysql_password
           file = File.expand_path("mysql", shared_path)
           "#{File.new(file).read}".strip if File.exists? file
+        end
+
+        def execute(command, text = "")
+          return if command.to_s.gsub(/\s/, "").size == 0
+          log :executing, "#{command} #{text}"
+          `cd #{root_path} && #{command}`
+        end
+
+        def log(action, string = nil)
+          return unless verbose
+          output = [string || action]
+          output.unshift action.to_s.capitalize.ljust(10, " ") unless string.nil?
+          puts output.join("  ")
         end
       end
 

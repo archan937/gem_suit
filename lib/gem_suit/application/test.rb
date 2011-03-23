@@ -20,6 +20,14 @@ module GemSuit
       module InstanceMethods
         attr_accessor :config, :verbose
 
+        def description
+          # Implement in subclass
+        end
+
+        def prepare
+          # Implement in subclass
+        end
+
         def create_test_database
           write   "config/database.yml"
           execute "RAILS_ENV=test rake db:create"
@@ -47,14 +55,6 @@ module GemSuit
           log "=" .ljust 144, "="
 
           run_environment
-        end
-
-        def description
-          # Implement in subclass
-        end
-
-        def prepare
-          # Implement in subclass
         end
 
         def bundle_install
