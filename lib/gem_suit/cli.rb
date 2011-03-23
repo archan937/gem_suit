@@ -111,7 +111,7 @@ module GemSuit
     desc "test", "Run GemSuit tests"
     method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => true
     def test
-      test_suit
+      test_suit_application
     end
 
     desc "server", "Start one of the GemSuit test application servers"

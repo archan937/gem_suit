@@ -1,7 +1,7 @@
 require "rubygems"
 require "gem_suit"
 
-class TestApplication < GemSuit::Application
+class SuitApplication < GemSuit::Application
 
   # def description
   #   "My first GemSuit integration test"

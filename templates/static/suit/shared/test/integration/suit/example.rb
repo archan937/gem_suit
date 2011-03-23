@@ -1,6 +1,6 @@
-require File.expand_path("../../../test_application.rb", __FILE__)
+require File.expand_path("../../../suit_application.rb", __FILE__)
 
-TestApplication.run
+SuitApplication.test
 
 class ExampleTest < ActionController::IntegrationTest
 

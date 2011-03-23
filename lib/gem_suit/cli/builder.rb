@@ -107,8 +107,8 @@ module GemSuit
           log "Creating the test database".green
           log "cd #{rails_root} && RAILS_ENV=test rake db:create"
 
-          require File.expand_path("test/test_application.rb", rails_root)
-          TestApplication.create_test_database
+          require File.expand_path("test/suit_application.rb", rails_root)
+          SuitApplication.create_test_database
         end
 
         def print_capybara_instructions
