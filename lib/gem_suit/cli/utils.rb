@@ -42,6 +42,10 @@ module GemSuit
           end
         end
 
+        def major_rails_versions
+          Dir["suit/rails-*"].collect{|dir| dir.match(/rails-(\d)/); $1}
+        end
+
         def gem_name
           File.basename File.expand_path("")
         end

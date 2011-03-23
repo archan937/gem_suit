@@ -4,7 +4,6 @@ require "gem_suit/cli/base"
 require "gem_suit/cli/config"
 require "gem_suit/cli/builder"
 require "gem_suit/cli/application"
-require "gem_suit/cli/test"
 require "gem_suit/version"
 
 # + suit tailor
@@ -28,7 +27,6 @@ module GemSuit
     include Config
     include Builder
     include Application
-    include Test
 
     default_task :test
 
@@ -111,20 +109,20 @@ module GemSuit
     end
 
     desc "test", "Run GemSuit tests"
-    method_options [:rails_versions, "-r"] => [2, 3], [:verbose, "-v"] => true
+    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => true
     def test
       test_suit
     end
 
     desc "server", "Start one of the GemSuit test application servers"
-    method_options [:rails_version, "-r"] => 3
+    method_options [:rails_version, "-r"] => :integer
     map "s" => :server
     def server
       rails :server
     end
 
     desc "console", "Start one of the GemSuit test application consoles"
-    method_options [:rails_version, "-r"] => 3
+    method_options [:rails_version, "-r"] => :integer
     map "c" => :console
     def console
       rails :console
