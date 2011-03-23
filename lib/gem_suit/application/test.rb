@@ -1,6 +1,6 @@
 module GemSuit
   class Application < ::Thor
-    module Setup
+    module Test
 
       def self.included(base)
         base.extend ClassMethods
@@ -12,8 +12,8 @@ module GemSuit
           self.new(:verbose => false).create_test_database
         end
 
-        def setup(*args)
-          self.new.setup *args
+        def run(*args)
+          self.new.run *args
         end
       end
 
@@ -27,7 +27,7 @@ module GemSuit
           restore "**/*.#{STASHED_EXT}"
         end
 
-        def setup(config = {})
+        def run(config = {})
           @config = config
 
           log "\n".ljust 145, "="

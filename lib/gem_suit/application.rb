@@ -1,11 +1,11 @@
 require "thor"
 require "gem_suit/application/actions"
-require "gem_suit/application/setup"
+require "gem_suit/application/test"
 
 module GemSuit
   class Application < ::Thor
     include Application::Actions
-    include Application::Setup
+    include Application::Test
 
     STASHED_EXT = "stashed"
 

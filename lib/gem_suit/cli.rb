@@ -9,12 +9,12 @@ require "gem_suit/version"
 
 # + suit tailor
 # + suit up
-# - suit fit (setup)
+# + suit fit (setup)
 # + suit restore
 # + suit write
 # + suit server
 # + suit console
-# - suit test
+# ! suit test
 # - suit test:unit
 # - suit test:functionals
 # - suit test:integration
