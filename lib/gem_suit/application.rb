@@ -1,3 +1,4 @@
+require "optparse"
 require "thor"
 require "gem_suit/application/actions"
 require "gem_suit/application/test"
@@ -9,8 +10,15 @@ module GemSuit
 
     STASHED_EXT = "stashed"
 
-    def initialize(options = {:validate_root_path => true, :verbose => ENV["VERBOSE"]})
+    def initialize(options = {:validate_root_path => true})
       super [], {}, {}
+
+      OptionParser.new do |opts|
+        opts.on "-v", "--[no-]verbose" do |v|
+          options[:verbose] ||= v
+        end
+      end.parse! ARGV
+
       options.each do |key, value|
         send :"#{key}=", value
       end
