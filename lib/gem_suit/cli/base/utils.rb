@@ -1,3 +1,5 @@
+STDOUT.sync = true
+
 module GemSuit
   class CLI < Thor
     module Base

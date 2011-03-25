@@ -1,3 +1,5 @@
+require "gem_suit/cli/application/io_buffer"
+
 module GemSuit
   class CLI < Thor
     module Application
@@ -40,7 +42,7 @@ module GemSuit
         def test_suit_application
           assert_suit_dir
 
-          data = OutputBuffer.capture do |buffer|
+          data = IOBuffer.capture do |buffer|
             buffer.execute "suit restore"
             (options.rails_versions || major_rails_versions).each do |rails_version|
               Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/*.rb"].each do |file|
