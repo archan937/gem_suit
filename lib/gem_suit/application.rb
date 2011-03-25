@@ -9,7 +9,7 @@ module GemSuit
 
     STASHED_EXT = "stashed"
 
-    def initialize(options = {:validate_root_path => true, :verbose => true})
+    def initialize(options = {:validate_root_path => true, :verbose => ENV["VERBOSE"]})
       super [], {}, {}
       options.each do |key, value|
         send :"#{key}=", value

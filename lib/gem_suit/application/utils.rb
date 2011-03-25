@@ -92,8 +92,8 @@ module GemSuit
           `cd #{root_path} && #{command}`
         end
 
-        def log(action, string = nil)
-          return unless verbose
+        def log(action, string = nil, force = false)
+          return unless verbose || force
           output = [string || action]
           output.unshift action.to_s.capitalize.ljust(10, " ") unless string.nil?
           puts output.join("  ")

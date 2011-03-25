@@ -39,7 +39,7 @@ module GemSuit
           @config = config
 
           log "\n".ljust 145, "="
-          log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n"
+          log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n", true
           log "\n".rjust 145, "="
 
           restore_all

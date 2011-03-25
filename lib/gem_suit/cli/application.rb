@@ -15,7 +15,7 @@ module GemSuit
           execute "suit restore"
           (options.rails_versions || major_rails_versions).each do |rails_version|
             Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/*.rb"].each do |file|
-              execute "ruby #{file}"
+              system "ruby #{file} VERBOSE=#{options.verbose?}"
             end
           end
         end

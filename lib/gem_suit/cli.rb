@@ -109,7 +109,7 @@ module GemSuit
     end
 
     desc "test", "Run GemSuit tests"
-    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => true
+    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false
     def test
       test_suit_application
     end
