@@ -9,7 +9,7 @@ module GemSuit
 
       module ClassMethods
         def create_test_database
-          self.new(:verbose => false).create_test_database
+          self.new.create_test_database
         end
 
         def test(*args)
@@ -39,7 +39,7 @@ module GemSuit
           @config = config
 
           log "\n".ljust 145, "="
-          log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n", true
+          log "Setting up test environment for Rails #{[rails_version, description].compact.join(" - ")}\n"
           log "\n".rjust 145, "="
 
           restore_all
@@ -101,7 +101,7 @@ module GemSuit
             require file
           end
 
-          puts "\nRunning Rails #{Rails::VERSION::STRING}\n\n"
+          log "\nRunning Rails #{Rails::VERSION::STRING}\n\n"
         end
       end
 

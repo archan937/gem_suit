@@ -92,7 +92,14 @@ module GemSuit
           `cd #{root_path} && #{command}`
         end
 
-        def log(action, string = nil, force = false)
+        def log(action, string_or_force = nil, force = nil)
+          if %w(TrueClass FalseClass).include? string_or_force.class.name
+            string = nil
+            force  = string_or_force
+          else
+            string = string_or_force
+            force  = false
+          end
           return unless verbose || force
           output = [string || action]
           output.unshift action.to_s.capitalize.ljust(10, " ") unless string.nil?
