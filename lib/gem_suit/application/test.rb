@@ -13,7 +13,7 @@ module GemSuit
         end
 
         def test(*args)
-          self.new.run_test *args
+          self.new.test *args
         end
       end
 
