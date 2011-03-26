@@ -9,6 +9,7 @@ class ExampleTest < ActionController::IntegrationTest
     end
 
     teardown do
+      SuitApplication.restore_all
     end
 
     should "assert css as expected" do

@@ -43,7 +43,6 @@ module GemSuit
           assert_suit_dir
 
           data = IOBuffer.capture do |buffer|
-            buffer.execute "suit restore"
             (options.rails_versions || major_rails_versions).each do |rails_version|
               Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/*.rb"].each do |file|
                 buffer.execute "ruby #{file} #{"-v" if options.very_verbose?}"
@@ -56,41 +55,40 @@ module GemSuit
 
       private
 
-        # TODO: Clean up the following
-
         MAJOR_RAILS_VERSIONS = [2, 3]
         DESCRIPTION_MATCH    = /^Setting up test environment for (.*)$/
         LOAD_MATCH           = /^Loaded suite suit\/rails-(\d+)\/dummy\/test\/integration\/suit\/(.*)$/
         TIME_MATCH           = /^Finished in (.*)\.$/
         SUMMARY_MATCH        = /^(\d+) (\w+), (\d+) (\w+), (\d+) (\w+), (\d+) (\w+)$/
 
-        def print_test_results(data)
-          suit_tests = data.output.inject([{}]) do |tests, line|
-            if line.match(DESCRIPTION_MATCH)
-              tests.last[:description] = $1
+        def extract_test_results(data)
+          [{}].tap do |result|
+            data.output.each do |line|
+              if line.match(DESCRIPTION_MATCH)
+                result.last[:description] = $1
+              end
+              if line.match(LOAD_MATCH)
+                result.last[:load] = "Rails #{$1} - #{camelize $2}"
+              end
+              if line.match(TIME_MATCH)
+                result.last[:time] = $1
+              end
+              if line.match(SUMMARY_MATCH)
+                result.last[:summary ] = line
+                result.last[$2.to_sym] = $1
+                result.last[$4.to_sym] = $3
+                result.last[$6.to_sym] = $5
+                result.last[$8.to_sym] = $7
+                result << {}
+              end
             end
-            if line.match(LOAD_MATCH)
-              tests.last[:load] = "Rails #{$1} - #{camelize $2}"
-            end
-            if line.match(TIME_MATCH)
-              tests.last[:time] = $1
-            end
-            if line.match(SUMMARY_MATCH)
-              tests.last[:summary ] = line
-              tests.last[$2.to_sym] = $1
-              tests.last[$4.to_sym] = $3
-              tests.last[$6.to_sym] = $5
-              tests.last[$8.to_sym] = $7
-              tests << {}
-            end
-            tests
+            result.reject!{|x| x.empty?}
           end
+        end
 
-          suit_tests.reject!{|x| x.empty?}
+        def print_test_results(data)
+          return if (suit_tests = extract_test_results(data)).empty?
 
-          return if suit_tests.size == 0
-
-          keys     = [:time, :tests, :assertions, :failures, :errors]
           failures = suit_tests.inject(0) do |count, test|
                        count += 1 if (test[:failures].to_i + test[:errors].to_i > 0) || test[:time].nil?
                        count
