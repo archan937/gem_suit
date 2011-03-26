@@ -64,11 +64,6 @@ module GemSuit
           Builder::Generator.new(self).run
         end
 
-        def stage_files_in_git
-          template "gitignore", ".gitignore", :verbose => false
-          execute  "git add ."
-        end
-
         # `suit fit`
 
         def rake_install

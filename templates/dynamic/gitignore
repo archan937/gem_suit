@@ -1,6 +1,9 @@
 .DS_Store
+.bundle
+*.gem
+Gemfile.lock
 pkg/*
+suit/rails-*/dummy/db/test.sqlite3
+suit/rails-*/dummy/log/*.log
+suit/rails-*/dummy/tmp/*
 suit/shared/mysql
-test/rails-*/dummy/db/test.sqlite3
-test/rails-*/dummy/log/*.log
-test/rails-*/dummy/tmp/*

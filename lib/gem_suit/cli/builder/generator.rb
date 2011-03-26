@@ -20,6 +20,7 @@ module GemSuit
           def run
             create_symlinks
             generate
+            stage_files
           end
 
           def options
@@ -147,6 +148,11 @@ module GemSuit
           template "suit/shared/test/test_helper.rb", :verbose => false
           template "suit/templates/shared/Gemfile", :verbose => false
           template "suit/templates/shared/config/database-#{suit_config[:mysql] ? "mysql" : "sqlite"}.yml", "suit/templates/shared/config/database.yml", :verbose => false
+        end
+
+        def stage_files
+          template "gitignore", ".gitignore", :force => true, :verbose => false
+          execute  "git add ."
         end
 
       end
