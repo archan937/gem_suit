@@ -15,7 +15,7 @@ require "gem_suit/version"
 # + suit console
 # + suit test
 # - suit test:unit
-# - suit test:functionals
+# - suit test:functional
 # - suit test:integration
 
 module GemSuit
