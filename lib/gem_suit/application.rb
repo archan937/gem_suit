@@ -13,11 +13,14 @@ module GemSuit
     def initialize(options = {:validate_root_path => true})
       super [], {}, {}
 
-      OptionParser.new do |opts|
-        opts.on "-v", "--[no-]verbose" do |v|
-          options[:verbose] ||= v
-        end
-      end.parse! ARGV
+      begin
+        OptionParser.new do |opts|
+          opts.on "-v", "--[no-]verbose" do |v|
+            options[:verbose] ||= v
+          end
+        end.parse! ARGV
+      rescue OptionParser::InvalidOption
+      end
 
       options.each do |key, value|
         send :"#{key}=", value
