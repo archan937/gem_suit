@@ -29,7 +29,7 @@ module GemSuit
         def rails(command)
           assert_suit_dir
 
-          rails_version = options.rails_version || major_rails_versions.last
+          rails_version = (options.rails_version || major_rails_versions.last).to_i
           root_path     = File.expand_path "suit/rails-#{rails_version}/dummy"
           command       = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
 
