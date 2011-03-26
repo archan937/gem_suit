@@ -53,7 +53,7 @@ module GemSuit
       case env
       when "global"
         if options.empty?
-          log suit_config_global.dump, true
+          log suit_config_global.to_str, true
         else
           options.reject{|k, v| !global_options.include? k.to_sym}.each do |key, value|
             suit_config_global[key] = value
@@ -62,7 +62,7 @@ module GemSuit
       when nil
         assert_suit_dir
         if options.empty?
-          log suit_config.dump, true
+          log suit_config.to_str, true
         else
           options.reject{|k, v| global_options.include? k.to_sym}.each do |key, value|
             suit_config[key] = value

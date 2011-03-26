@@ -14,6 +14,10 @@ module GemSuit
           YAML.dump hash.inject({}){|h, (k, v)| h[k.to_sym] = v; h}
         end
 
+        def to_str
+          hash.collect{|key, value| "#{key}=#{value}"}.join "\n"
+        end
+
         def [](key)
           hash[key]
         end
