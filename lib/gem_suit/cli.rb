@@ -6,18 +6,6 @@ require "gem_suit/cli/builder"
 require "gem_suit/cli/application"
 require "gem_suit/version"
 
-# + suit tailor
-# + suit up
-# + suit fit (setup)
-# + suit restore
-# + suit write
-# + suit server
-# + suit console
-# + suit test
-# - suit test:unit
-# - suit test:functional
-# - suit test:integration
-
 module GemSuit
   class CLI < Thor
 
@@ -110,7 +98,8 @@ module GemSuit
     desc "test", "Run GemSuit tests"
     method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
     def test
-      test_suit_application
+      test_suit
+      # unit functional integration
     end
 
     desc "server", "Start one of the GemSuit test application servers"

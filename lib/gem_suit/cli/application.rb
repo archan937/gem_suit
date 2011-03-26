@@ -39,7 +39,7 @@ module GemSuit
           system "cd #{root_path} && #{command}"
         end
 
-        def test_suit_application
+        def test_suit
           assert_suit_dir
 
           data = IOBuffer.capture do |buffer|
