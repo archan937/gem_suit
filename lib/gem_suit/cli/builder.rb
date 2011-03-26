@@ -64,8 +64,9 @@ module GemSuit
           Builder::Generator.new(self).run
         end
 
-        def git_ignore
-          # ignore mysql_password
+        def stage_files_in_git
+          template "gitignore", ".gitignore", :verbose => false
+          execute  "git add ."
         end
 
         # `suit fit`

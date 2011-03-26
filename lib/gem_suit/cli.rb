@@ -50,7 +50,7 @@ module GemSuit
       configure_suit
       create_rails_apps
       generate_files
-      git_ignore
+      stage_files_in_git
 
       opts = options.collect do |key, value|
         ["-", ("-no" unless value), "-#{key}"].compact.join "" if [:verbose].include?(key.to_sym)
