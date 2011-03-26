@@ -1,0 +1,4 @@
+---
+:rails_versions:
+  - 2.3.11
+  - latest
