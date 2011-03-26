@@ -12,11 +12,11 @@ module GemSuit
         module InstanceMethods
 
           def execute(command, force = nil)
-            options.verbose? || force ? system(command) : `#{command}`
+            options.very_verbose? || options.verbose? || force ? system(command) : `#{command}`
           end
 
           def log(string, force = false)
-            puts string if options.verbose? || force
+            puts string if options.very_verbose? || options.verbose? || force
           end
 
           def camelize(lower_case_and_underscored_word, first_letter_in_uppercase = true)

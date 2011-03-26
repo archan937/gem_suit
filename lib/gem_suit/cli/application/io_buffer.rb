@@ -1,5 +1,3 @@
-require "thor/shell/basic"
-
 module GemSuit
   class CLI < Thor
     module Application

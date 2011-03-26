@@ -46,7 +46,7 @@ module GemSuit
             buffer.execute "suit restore"
             (options.rails_versions || major_rails_versions).each do |rails_version|
               Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/*.rb"].each do |file|
-                buffer.execute "ruby #{file} #{"-v" if options.verbose?}"
+                buffer.execute "ruby #{file} #{"-v" if options.very_verbose?}"
               end
             end
           end
@@ -56,15 +56,21 @@ module GemSuit
 
       private
 
+        # TODO: Clean up the following
+
         MAJOR_RAILS_VERSIONS = [2, 3]
         DESCRIPTION_MATCH    = /^Setting up test environment for (.*)$/
+        LOAD_MATCH           = /^Loaded suite suit\/rails-(\d+)\/dummy\/test\/integration\/suit\/(.*)$/
         TIME_MATCH           = /^Finished in (.*)\.$/
         SUMMARY_MATCH        = /^(\d+) (\w+), (\d+) (\w+), (\d+) (\w+), (\d+) (\w+)$/
 
-        def print_test_results(output)
-          suit_tests = output.inject([]) do |tests, line|
+        def print_test_results(data)
+          suit_tests = data.output.inject([{}]) do |tests, line|
             if line.match(DESCRIPTION_MATCH)
-              tests << {:description => $1.gsub(DESCRIPTION_MATCH, "")}
+              tests.last[:description] = $1
+            end
+            if line.match(LOAD_MATCH)
+              tests.last[:load] = "Rails #{$1} - #{camelize $2}"
             end
             if line.match(TIME_MATCH)
               tests.last[:time] = $1
@@ -75,9 +81,12 @@ module GemSuit
               tests.last[$4.to_sym] = $3
               tests.last[$6.to_sym] = $5
               tests.last[$8.to_sym] = $7
+              tests << {}
             end
             tests
           end
+
+          suit_tests.reject!{|x| x.empty?}
 
           return if suit_tests.size == 0
 
@@ -87,22 +96,22 @@ module GemSuit
                        count
                      end
 
-          puts "\n"
-          puts "".ljust(70, "=")
-          puts "Integration tests (#{failures} failures in #{@end - @start} seconds)"
+          log "\n"
+          log "".ljust(100, "=")
+          log "Integration tests (#{failures} failures in #{data.finish - data.start} seconds)"
           suit_tests.each do |test|
-            puts ""             .ljust(70, "-")
-            puts "  Description".ljust(16, ".") + ": #{description test}"
-            puts "  Duration"   .ljust(16, ".") + ": #{test[:time]     }"
-            puts "  Summary"    .ljust(16, ".") + ": #{test[:summary]  }"
+            log ""             .ljust(100, "-")
+            log "  Description".ljust(16 , ".") + ": #{description test}"
+            log "  Duration"   .ljust(16 , ".") + ": #{test[:time]     }"
+            log "  Summary"    .ljust(16 , ".") + ": #{test[:summary]  }"
           end
-          puts "".ljust(70, "=")
-          puts "\n"
+          log "".ljust(100, "=")
+          log "\n"
         end
 
-        def description(buffer_data)
+        def description(test)
           failed = (test[:failures].to_i + test[:errors].to_i > 0) || test[:tests].nil?
-          test[:description].send failed ? :red : :green
+          ((test[:description] unless (test[:description] || "").empty?) || test[:load]).send failed ? :red : :green
         end
 
       end

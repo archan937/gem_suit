@@ -13,7 +13,7 @@ require "gem_suit/version"
 # + suit write
 # + suit server
 # + suit console
-# > suit test (integrator)
+# + suit test
 # - suit test:unit
 # - suit test:functionals
 # - suit test:integration
@@ -109,7 +109,7 @@ module GemSuit
     end
 
     desc "test", "Run GemSuit tests"
-    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false
+    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
     def test
       test_suit_application
     end

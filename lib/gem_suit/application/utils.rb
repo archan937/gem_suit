@@ -1,3 +1,5 @@
+STDOUT.sync = true
+
 require "gem_suit/application/utils/gemfile"
 
 module GemSuit
