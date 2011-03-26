@@ -15,7 +15,15 @@ module GemSuit
         end
 
         def to_str
-          hash.collect{|key, value| "#{key}=#{value}"}.join "\n"
+          hash.collect do |key, value|
+            val = case value.class.name
+                  when "Array"
+                    value.join ","
+                  else
+                    value
+                  end
+            "#{key}=#{val}"
+          end.join "\n"
         end
 
         def [](key)
