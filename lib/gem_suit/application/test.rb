@@ -36,6 +36,7 @@ module GemSuit
         end
 
         def test(config = {})
+          @skipped_files = nil
           @config = config
 
           log "\n".ljust 145, "="
@@ -43,7 +44,7 @@ module GemSuit
           log "\n".rjust 145, "="
 
           restore_all
-          write_all
+          stash_all
           bundle_install
 
           prepare
@@ -98,6 +99,7 @@ module GemSuit
           end
 
           Dir[File.expand_path("../#{File.basename(self.class.__file__, ".rb")}/**/*.rb", self.class.__file__)].each do |file|
+            next if skip? :require, file
             require file
           end
 

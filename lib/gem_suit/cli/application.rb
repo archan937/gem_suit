@@ -26,17 +26,22 @@ module GemSuit
           log "Done #{action.to_s[0..-2]}ing files".green
         end
 
-        def rails(command)
+        def rails(command, environment, args = nil)
           assert_suit_dir
 
           rails_version = (options.rails_version || major_rails_versions.last).to_i
           root_path     = File.expand_path "suit/rails-#{rails_version}/dummy"
-          command       = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
+          command       = case command
+                          when :rake
+                            "rake #{args}"
+                          else
+                            {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
+                          end
 
           require "suit/rails-#{rails_version}/dummy/test/suit_application.rb"
           SuitApplication.new(:verbose => options.verbose?).bundle_install
 
-          system "cd #{root_path} && #{command}"
+          system "cd #{root_path} && RAILS_ENV=#{environment} #{command}"
         end
 
         def test_suit

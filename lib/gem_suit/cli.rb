@@ -102,18 +102,25 @@ module GemSuit
       # unit functional integration
     end
 
-    desc "server", "Start one of the GemSuit test application servers"
+    desc "server [ENVIRONMENT]", "Start one of the GemSuit test application servers"
     method_options [:rails_version, "-r"] => :integer
     map "s" => :server
-    def server
-      rails :server
+    def server(environment = "development")
+      rails :server, environment
     end
 
-    desc "console", "Start one of the GemSuit test application consoles"
+    desc "console [ENVIRONMENT]", "Start one of the GemSuit test application consoles"
     method_options [:rails_version, "-r"] => :integer
     map "c" => :console
-    def console
-      rails :console
+    def console(environment = "development")
+      rails :console, environment
+    end
+
+    desc "rake TASK", "Run rake task within one of the GemSuit test applications"
+    method_options [:rails_version, "-r"] => :integer, [:environment, "-e"] => "development"
+    map "r" => :rake
+    def rake(task)
+      rails :rake, options.environment, task
     end
 
   private

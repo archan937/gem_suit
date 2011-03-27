@@ -18,13 +18,21 @@ module GemSuit
           self.new.restore_all true
         end
 
-        def write_all
-          self.new.write_all
+        def stash_all
+          self.new.stash_all
         end
       end
 
       module InstanceMethods
         attr_accessor :config, :verbose
+
+        def restore_files
+          # Implement in subclass
+        end
+
+        def stash_files
+          # Implement in subclass
+        end
 
         def locals_for_template
           # Implement in subclass
@@ -46,6 +54,8 @@ module GemSuit
             end
           end
 
+          return if restore_files == false
+
           if File.exists?(new_files = expand_path(".new_files"))
             File.readlines(new_files).each do |line|
               delete line.strip
@@ -62,7 +72,9 @@ module GemSuit
           true
         end
 
-        def write_all
+        def stash_all
+          return if stash_files == false
+          stash "Gemfile.lock"
           ["shared", "rails-#{rails_version}"].each do |dir|
             dir_path = File.expand_path dir, templates_path
             next unless File.exists? dir_path
@@ -76,9 +88,19 @@ module GemSuit
           true
         end
 
+        def skip(action, string)
+          ((@skipped_files ||= {})[action] ||= []) << string
+        end
+
+        def skip?(action, string)
+          return false if @skipped_files.nil? || @skipped_files[action].nil?
+          !!@skipped_files[action].detect{|x| File.fnmatch? expand_path(x), string}
+        end
+
         def restore(string)
           Dir[expand_path(string)].each do |file|
             next unless File.exists? stashed(file)
+            next if skip? :restore, file
             delete original(file)
             log :restoring, stashed(file)
             File.rename stashed(file), original(file)
@@ -87,6 +109,7 @@ module GemSuit
 
         def delete(string)
           Dir[expand_path(string)].each do |file|
+            next if skip? :deleting, file
             log :deleting, file
             File.delete file
           end
@@ -103,6 +126,7 @@ module GemSuit
         end
 
         def write(string)
+          return if skip? :write, string
           stash string
           create string
         end
@@ -110,6 +134,7 @@ module GemSuit
         def stash(string)
           Dir[expand_path(string)].each do |file|
             next if new_file?(file) || File.exists?(stashed(file))
+            next if skip? :stash, file
             log :stashing, original(file)
             File.rename original(file), stashed(file)
           end
@@ -124,6 +149,7 @@ module GemSuit
             root = Pathname.new path
             Dir[File.expand_path(string, root.realpath)].each do |file|
               next if File.directory? file
+              next if skip? :create, file
               begin
                 @relative_path = Pathname.new(file).relative_path_from(root).to_s
                 @locals        = nil
@@ -143,7 +169,13 @@ module GemSuit
           end
         end
 
+        def copy(source, destination)
+          log :copying, "#{source} -> #{destination}"
+          FileUtils.cp expand_path(source), expand_path(destination)
+        end
+
         def generate(*args)
+          return if skip? :generate, args.first
           command = case rails_version
                     when 2
                       "script/generate"
