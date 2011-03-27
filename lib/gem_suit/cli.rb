@@ -43,7 +43,7 @@ module GemSuit
         ["-", ("-no" unless value), "-#{key}"].compact.join "" if [:verbose].include?(key.to_sym)
       end.compact.join " "
 
-      system "suit fit #{opts}"
+      system "suit fit #{opts} --no-rake_install"
     end
 
     desc "config [global]", "Configure GemSuit within your gem (use `suit config global` for global config)"
@@ -74,10 +74,10 @@ module GemSuit
     end
 
     desc "fit", "Establish the GemSuit in your environment"
-    method_options [:verbose, "-v"] => false
+    method_options [:rake_install, "-r"] => true, [:verbose, "-v"] => false
     def fit
       assert_suit_dir
-      rake_install
+      rake_install if options.rake_install?
       ask_mysql_password
       create_test_database
       print_capybara_instructions
