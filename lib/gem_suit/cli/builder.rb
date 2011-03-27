@@ -51,6 +51,10 @@ module GemSuit
             end
           end
 
+          Dir["#{TEMP_DIR}/**/.DS_Store"].each do |file|
+            FileUtils.rm file
+          end
+
           FileUtils.rmdir TEMP_DIR if File.exists? TEMP_DIR
         end
 
