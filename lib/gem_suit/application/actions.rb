@@ -152,6 +152,7 @@ module GemSuit
                     end
 
           execute "#{command} #{args.join(" ")}"
+          @ran_generator = true
         end
 
       private
