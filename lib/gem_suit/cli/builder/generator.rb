@@ -113,14 +113,6 @@ module GemSuit
               locals[:author]  ||= ask "What is your author name?"
               template "README.textile", :verbose => false
             end
-
-            gemspec = File.read "#{gem_name}.gemspec"
-            gemspec.gsub! "TODO: Write your email address", email  unless email .to_s.empty?
-            gemspec.gsub! "TODO: Write your name"         , author unless author.to_s.empty?
-
-            File.open "#{gem_name}.gemspec", "w" do |file|
-              file << gemspec
-            end
           end
 
           Dir["suit/rails-*/dummy"].each do |rails_root|
@@ -152,7 +144,7 @@ module GemSuit
 
         def stage_files
           template "gitignore", ".gitignore", :force => true, :verbose => false
-          execute  "git add ."
+          execute  "git add -A"
         end
 
       end
