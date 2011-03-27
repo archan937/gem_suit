@@ -1,10 +1,11 @@
 require "optparse"
-require "thor"
+require "thor/group"
 require "gem_suit/application/actions"
 require "gem_suit/application/test"
 
 module GemSuit
-  class Application < ::Thor
+  class Application < ::Thor::Group
+
     include Application::Actions
     include Application::Test
 

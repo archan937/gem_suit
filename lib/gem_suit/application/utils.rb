@@ -3,7 +3,7 @@ STDOUT.sync = true
 require "gem_suit/application/utils/gemfile"
 
 module GemSuit
-  class Application < ::Thor
+  class Application < ::Thor::Group
     module Utils
 
       def self.included(base)
