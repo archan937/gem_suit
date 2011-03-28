@@ -95,10 +95,10 @@ module GemSuit
       files :write
     end
 
-    desc "test", "Run GemSuit tests"
+    desc "test [TESTFILE]", "Run GemSuit tests"
     method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
-    def test
-      test_suit
+    def test(file = "*")
+      test_suit file
       # unit functional integration
     end
 

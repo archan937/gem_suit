@@ -44,13 +44,13 @@ module GemSuit
           system "cd #{root_path} && RAILS_ENV=#{environment} #{command}"
         end
 
-        def test_suit
+        def test_suit(file)
           assert_suit_dir
 
           data = IOBuffer.capture do |buffer|
             (options.rails_versions || major_rails_versions).each do |rails_version|
-              Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/*.rb"].each do |file|
-                buffer.execute "ruby #{file} #{"-v" if options.very_verbose?}"
+              Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/#{file}.rb"].each do |f|
+                buffer.execute "ruby #{f} #{"-v" if options.very_verbose?}"
               end
             end
           end
