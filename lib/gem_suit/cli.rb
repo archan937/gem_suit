@@ -95,15 +95,19 @@ module GemSuit
       files :write
     end
 
-    desc "test [TESTFILE]", "Run GemSuit tests"
-    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
-    def test(file = "*")
-      test_suit file
-      # unit functional integration
+    desc "test [SECTION]", "Run GemSuit (suit, unit, functional, integration) tests"
+    method_options [:rails_versions, "-r"] => :array, [:file, "-f"] => :string, [:pattern, "-p"] => :string, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
+    def test(section = "suit")
+      method = "test_#{section}"
+      if Application::InstanceMethods.instance_methods.include? method
+        send method
+      else
+        raise Error, "Unrecognized test section '#{section}'. Either leave it empty or pass 'suit', 'unit', 'functional' or 'integration'"
+      end
     end
 
     desc "server [ENVIRONMENT]", "Start one of the GemSuit test application servers"
-    method_options [:rails_version, "-r"] => :integer
+    method_options [:rails_version, "-r"] => :integer, [:port, "-p"] => :integer
     map "s" => :server
     def server(environment = "development")
       rails :server, environment

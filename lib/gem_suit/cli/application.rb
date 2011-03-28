@@ -9,6 +9,35 @@ module GemSuit
       end
 
       module InstanceMethods
+
+        def test_suit
+          assert_suit_dir
+
+          pattern = options.file.nil? ? (options.pattern || "**/*.rb") : "**/#{options.file}.rb"
+          data    = IOBuffer.capture do |buffer|
+
+            (options.rails_versions || major_rails_versions).each do |rails_version|
+              Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/#{pattern}"].each do |f|
+                buffer.execute "ruby #{f} #{"-v" if options.very_verbose?}"
+              end
+            end
+          end
+
+          print_test_results data
+        end
+
+        def test_unit
+          assert_suit_dir
+
+          pattern = options.file.nil? ? (options.pattern || "**/*_test.rb") : "**/#{options.file}.rb"
+          loader  = File.expand_path "../application/test_loader.rb", __FILE__
+
+          (options.rails_versions || major_rails_versions).each do |rails_version|
+            files = Dir["suit/rails-#{rails_version}/dummy/test/unit/#{pattern}"].collect{|x| x.inspect}.join " "
+            system  "ruby #{loader} -I#{files}"
+          end
+        end
+
       private
 
         def files(action)
@@ -41,21 +70,7 @@ module GemSuit
           require "suit/rails-#{rails_version}/dummy/test/suit_application.rb"
           SuitApplication.new(:verbose => options.verbose?).bundle_install
 
-          system "cd #{root_path} && RAILS_ENV=#{environment} #{command}"
-        end
-
-        def test_suit(file)
-          assert_suit_dir
-
-          data = IOBuffer.capture do |buffer|
-            (options.rails_versions || major_rails_versions).each do |rails_version|
-              Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/**/#{file}.rb"].each do |f|
-                buffer.execute "ruby #{f} #{"-v" if options.very_verbose?}"
-              end
-            end
-          end
-
-          print_test_results data
+          system "cd #{root_path} && RAILS_ENV=#{environment} #{command} #{"-p #{options.port}" if options.port}"
         end
 
       private
