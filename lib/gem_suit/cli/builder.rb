@@ -13,7 +13,7 @@ module GemSuit
       module InstanceMethods
       private
 
-        TEST_SUITS = "{test,spec,features}"
+        TEST_SUITS = "{test}"
         TEMP_DIR   = "tmp"
 
         # `suit up`
