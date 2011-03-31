@@ -32,7 +32,7 @@ module GemSuit
           pattern = options.file.nil? ? (options.pattern || "**/*_test.rb") : "**/#{options.file}.rb"
           loader  = File.expand_path "../application/test_loader.rb", __FILE__
 
-          if options.rails_versions == "0"
+          if options.rails_versions == ["0"]
             files = Dir["suit/shared/test/unit/#{pattern}"].collect{|x| x.inspect}.join " "
             system "ruby #{loader} -I#{files}"
           else
