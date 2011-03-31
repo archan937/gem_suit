@@ -35,7 +35,7 @@ module GemSuit
           restore "**/*.#{STASHED_EXT}"
         end
 
-        def test(config = {})
+        def test(config = {}, run_env = true)
           @skipped_files = nil
           @config = config
 
@@ -55,7 +55,7 @@ module GemSuit
           log "Environment for Rails #{[rails_version, description].compact.join(" - ")} is ready for testing"
           log "=" .ljust 144, "="
 
-          run_environment
+          run_environment if run_env
         end
 
         def bundle_install
