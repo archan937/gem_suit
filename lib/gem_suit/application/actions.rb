@@ -34,7 +34,7 @@ module GemSuit
           # Implement in subclass
         end
 
-        def locals_for_template
+        def locals_for_template(path)
           # Implement in subclass
         end
 
