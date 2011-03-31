@@ -102,7 +102,7 @@ module GemSuit
       if Application::InstanceMethods.instance_methods.include? method
         send method
       else
-        raise Error, "Unrecognized test section '#{section}'. Either leave it empty or pass 'suit', 'unit', 'functional' or 'integration'"
+        raise Error, "Unrecognized test section '#{section}'. Either leave it empty or pass 'setup', 'suit', 'unit', 'functional' or 'integration'"
       end
     end
 
@@ -128,7 +128,6 @@ module GemSuit
     end
 
     desc "bundle [COMMAND]", "Run `bundle install` when needed at default or run the specified Bundler command"
-    method_options
     def bundle(command = "install")
       if command == "install" && `bundle check`.any?{|line| line.include? "`bundle install`"}
         puts "Running `bundle install` (this can take several minutes...)".yellow
