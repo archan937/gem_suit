@@ -1,12 +1,15 @@
 ENV["RAILS_ENV"] = "test"
 
-dirname = File.expand_path("..", File.dirname(caller.detect{|x| !x.include? "custom_require.rb"}))
-dirname = File.expand_path(Dir["#{dirname}/../rails-*/dummy"].last) unless File.exists? "#{dirname}/config/environment.rb"
+caller_dir = File.dirname(caller.detect{|x| !x.include? "custom_require.rb"})
+rails_root = File.expand_path "..", caller_dir
+rails_root = File.expand_path Dir["#{caller_dir}/../../rails-*/dummy"].last unless File.exists? "#{rails_root}/config/environment.rb"
+gem_dir    = File.expand_path "../../..", rails_root
 
-system "cd #{dirname} && suit bundle"
+system "cd #{gem_dir}    && suit restore"
+system "cd #{rails_root} && suit bundle"
 
 begin
-  require "#{dirname}/config/environment"
+  require "#{rails_root}/config/environment"
 rescue LoadError => e
   puts "ERROR: #{e.message}\n\n"
 end
