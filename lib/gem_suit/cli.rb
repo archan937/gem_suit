@@ -102,7 +102,7 @@ module GemSuit
       if Application::InstanceMethods.instance_methods.include? method
         send method
       else
-        raise Error, "Unrecognized test section '#{section}'. Either leave it empty or pass 'setup', 'suit', 'unit', 'functional' or 'integration'"
+        raise Error, "Unrecognized test section '#{section}'. Either leave it empty or pass 'suit', 'unit', 'functional' or 'integration'"
       end
     end
 
