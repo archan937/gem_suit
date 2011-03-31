@@ -24,14 +24,16 @@ module GemSuit
 
         def validate_root_path!(path)
           unless path.match(/rails-\d/)
-            puts caller
             log "Running a #{self.class.name} instance from an invalid path: '#{path}' needs to match ".red + "/rails-\\d/".yellow
             exit
           end
         end
 
         def root_path
-          (@root_path || (defined?(Rails) ? Rails.root : File.expand_path("../..", self.class.__file__)).to_s).tap do |path|
+          (@root_path || (Rails.root if defined? Rails) || begin
+            dir = File.expand_path "../..", self.class.__file__
+            File.exists?("#{dir}/config/environment.rb") ? dir : Dir["#{dir}/../rails-*/dummy"].last
+          end).to_s.tap do |path|
             validate_root_path! path if validate_root_path
             self.class.source_root = path
           end
