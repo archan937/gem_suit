@@ -12,6 +12,10 @@ module GemSuit
           self.new.create_test_database
         end
 
+        def setup(*args)
+          self.new.setup *args
+        end
+
         def test(*args)
           self.new.test *args
         end
@@ -35,7 +39,7 @@ module GemSuit
           restore "**/*.#{STASHED_EXT}"
         end
 
-        def test(config = {}, run_env = true)
+        def setup(config = {})
           @skipped_files = nil
           @config = config
 
@@ -50,12 +54,16 @@ module GemSuit
           prepare
           prepare_database
           @prepared = true
+        end
+
+        def test(config = {})
+          setup config
 
           log "\n".rjust 145, "="
           log "Environment for Rails #{[rails_version, description].compact.join(" - ")} is ready for testing"
           log "=" .ljust 144, "="
 
-          run_environment if run_env
+          run_environment
         end
 
         def bundle_install
