@@ -127,6 +127,17 @@ module GemSuit
       rails :rake, options.environment, task
     end
 
+    desc "bundle [COMMAND]", "Run `bundle install` when needed at default or run the specified Bundler command"
+    method_options
+    def bundle(command = "install")
+      if command == "install" && `bundle check`.any?{|line| line.include? "`bundle install`"}
+        puts "Running `bundle install` (this can take several minutes...)".yellow
+      else
+        return
+      end
+      system "bundle #{command}"
+    end
+
   private
 
     def method_missing(method, *args)
