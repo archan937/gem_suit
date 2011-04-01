@@ -33,9 +33,11 @@ module GemSuit
           loader  = File.expand_path "../application/test_loader.rb", __FILE__
 
           proc = Proc.new do |string|
+            system "suit restore"
             array = Dir[string]
             files = array.collect{|x| x.inspect}.join " "
             system "ruby #{loader} #{"-I" if array.size > 1}#{files}"
+            system "suit restore"
           end
 
           if options.rails_versions == ["0"]
