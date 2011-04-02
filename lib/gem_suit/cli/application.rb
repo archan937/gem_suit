@@ -10,14 +10,16 @@ module GemSuit
 
       module InstanceMethods
 
-        def test_suit
+        def test_suit(file_or_pattern = nil)
           assert_suit_dir
 
-          pattern = options.file.nil? ? (options.pattern || "**/*.rb") : "**/#{options.file}.rb"
-          data    = IOBuffer.capture do |buffer|
-
+          data = IOBuffer.capture do |buffer|
             (options.rails_versions || major_rails_versions).each do |rails_version|
-              Dir["suit/rails-#{rails_version}/dummy/test/integration/suit/#{pattern}"].each do |f|
+              path  = "suit/rails-#{rails_version}/dummy/test/integration/suit/"
+              match = Dir[File.join(path, "**", "#{file_or_pattern || "*"}.rb")]
+              match = Dir[File.join(path, file_or_pattern)] if match.empty?
+
+              match.each do |f|
                 buffer.execute "ruby #{f} #{"-v" if options.very_verbose?}"
               end
             end
@@ -26,25 +28,26 @@ module GemSuit
           print_test_results data
         end
 
-        def test_unit
+        def test_unit(file_or_pattern = nil)
           assert_suit_dir
 
-          pattern = options.file.nil? ? (options.pattern || "**/*_test.rb") : "**/#{options.file}.rb"
-          loader  = File.expand_path "../application/test_loader.rb", __FILE__
-
-          proc = Proc.new do |string|
+          loader = File.expand_path "../application/test_loader.rb", __FILE__
+          proc   = Proc.new do |path|
             system "suit restore"
-            array = Dir[string]
-            files = array.collect{|x| x.inspect}.join " "
-            system "ruby #{loader} #{"-I" if array.size > 1}#{files}"
+
+            match = Dir[File.join(path, "**", "#{file_or_pattern || "*"}.rb")]
+            match = Dir[File.join(path, file_or_pattern)] if match.empty?
+            files = match.collect{|x| x.inspect}.join " "
+
+            system "ruby #{loader} #{"-I" if match.size > 1}#{files}"
             system "suit restore"
           end
 
           if options.rails_versions == ["0"]
-            proc.call "suit/shared/test/unit/#{pattern}"
+            proc.call "suit/shared/test/unit/"
           else
             (options.rails_versions || major_rails_versions).each do |rails_version|
-              proc.call "suit/rails-#{rails_version}/dummy/test/unit/#{pattern}"
+              proc.call "suit/rails-#{rails_version}/dummy/test/unit/"
             end
           end
         end
