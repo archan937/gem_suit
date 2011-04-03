@@ -100,7 +100,7 @@ module GemSuit
           end
         end
 
-        def create_test_database
+        def create_mysql_test_database
           return unless suit_config.mysql?
 
           rails_root = Dir["suit/rails-*/dummy"].max
@@ -109,6 +109,16 @@ module GemSuit
 
           require File.expand_path("test/suit_application.rb", rails_root)
           SuitApplication.create_test_database
+        end
+
+        def create_development_databases
+          Dir["suit/rails-*/dummy"].each do |rails_root|
+            cmd     = "cd #{rails_root} && rake db:setup"
+            version = rails_root.match(/suit\/([^\/]*)\//).captures[0].capitalize.gsub "-", " "
+            log     "Creating Rails #{version} development database".green
+            log     cmd
+            execute cmd
+          end
         end
 
         def print_capybara_instructions

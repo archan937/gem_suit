@@ -79,7 +79,8 @@ module GemSuit
       assert_suit_dir
       rake_install if options.rake_install?
       ask_mysql_password
-      create_test_database
+      create_mysql_test_database
+      create_development_databases
       print_capybara_instructions
     end
 
