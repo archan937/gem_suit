@@ -25,31 +25,42 @@ module GemSuit
             end
           end
 
-          print_test_results data
+          print_test_results "Suit", data
         end
 
         def test_unit(file_or_pattern = nil)
           assert_suit_dir
 
           loader = File.expand_path "../application/test_loader.rb", __FILE__
-          proc   = Proc.new do |path|
-            system "suit restore"
+
+          proc = Proc.new do |buffer, path|
+            buffer.execute "suit restore"
 
             match = Dir[File.join(path, "**", "#{file_or_pattern || "*"}.rb")]
             match = Dir[File.join(path, file_or_pattern)] if match.empty?
             files = match.collect{|x| x.inspect}.join " "
 
-            system "ruby #{loader} #{"-I" if match.size > 1}#{files}"
-            system "suit restore"
+            section    = path.match(/suit\/([^\/]*)\//).captures[0].capitalize.gsub "-", " "
+            files_desc = match.size == 1 ?
+                           match.first.gsub(path, "") :
+                           "#{file_or_pattern.nil? ? "All" : "Multiple"} tests"
+
+            buffer.log     "#{section} - #{files_desc}"
+            buffer.execute "ruby #{loader} #{"-I" if match.size > 1}#{files}"
+            buffer.execute "suit restore"
           end
 
-          if options.rails_versions == ["0"]
-            proc.call "suit/shared/test/unit/"
-          else
-            (options.rails_versions || major_rails_versions).each do |rails_version|
-              proc.call "suit/rails-#{rails_version}/dummy/test/unit/"
+          data = IOBuffer.capture do |buffer|
+            if options.rails_versions == ["0"]
+              proc.call buffer, "suit/shared/test/unit/"
+            else
+              (options.rails_versions || major_rails_versions).each do |rails_version|
+                proc.call buffer, "suit/rails-#{rails_version}/dummy/test/unit/"
+              end
             end
           end
+
+          print_test_results "Unit", data
         end
 
       private
@@ -92,13 +103,35 @@ module GemSuit
         MAJOR_RAILS_VERSIONS = [2, 3]
         DESCRIPTION_MATCH    = /^Setting up test environment for (.*)$/
         LOAD_MATCH           = /^Loaded suite suit\/rails-(\d+)\/dummy\/test\/integration\/suit\/(.*)$/
+        GEM_SUIT_MATCH       = /^GemSuit: (.*)$/
         TIME_MATCH           = /^Finished in (.*)\.$/
         SUMMARY_MATCH        = /^(\d+) (\w+), (\d+) (\w+), (\d+) (\w+), (\d+) (\w+)$/
+
+        def print_test_results(section, data)
+          return if (suit_tests = extract_test_results(data)).empty?
+
+          failures = suit_tests.inject(0) do |count, test|
+                       count += 1 if (test[:failures].to_i + test[:errors].to_i > 0) || test[:time].nil?
+                       count
+                     end
+
+          log "\n"
+          log "".ljust(100, "=")
+          log "#{section} tests (#{failures} failures in #{data.finish - data.start} seconds)"
+          suit_tests.each do |test|
+            log ""             .ljust(100, "-")
+            log "  Description".ljust(16 , ".") + ": #{description test}"
+            log "  Duration"   .ljust(16 , ".") + ": #{test[:time]     }"
+            log "  Summary"    .ljust(16 , ".") + ": #{test[:summary]  }"
+          end
+          log "".ljust(100, "=")
+          log "\n"
+        end
 
         def extract_test_results(data)
           [{}].tap do |result|
             data.output.each do |line|
-              if line.match(DESCRIPTION_MATCH)
+              if line.match(DESCRIPTION_MATCH) || line.match(GEM_SUIT_MATCH)
                 result.last[:description] = $1
               end
               if line.match(LOAD_MATCH)
@@ -116,29 +149,9 @@ module GemSuit
                 result << {}
               end
             end
+
             result.reject!{|x| x.empty?}
           end
-        end
-
-        def print_test_results(data)
-          return if (suit_tests = extract_test_results(data)).empty?
-
-          failures = suit_tests.inject(0) do |count, test|
-                       count += 1 if (test[:failures].to_i + test[:errors].to_i > 0) || test[:time].nil?
-                       count
-                     end
-
-          log "\n"
-          log "".ljust(100, "=")
-          log "Integration tests (#{failures} failures in #{data.finish - data.start} seconds)"
-          suit_tests.each do |test|
-            log ""             .ljust(100, "-")
-            log "  Description".ljust(16 , ".") + ": #{description test}"
-            log "  Duration"   .ljust(16 , ".") + ": #{test[:time]     }"
-            log "  Summary"    .ljust(16 , ".") + ": #{test[:summary]  }"
-          end
-          log "".ljust(100, "=")
-          log "\n"
         end
 
         def description(test)

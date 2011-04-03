@@ -14,6 +14,10 @@ module GemSuit
           end
         end
 
+        def log(line)
+          data << "GemSuit: #{line}"
+        end
+
         def execute(command)
           IO.popen(command) do |io|
             until io.eof?
