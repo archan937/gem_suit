@@ -8,6 +8,10 @@ module GemSuit
       end
 
       module ClassMethods
+        def bundle_install
+          self.new.bundle_install
+        end
+
         def create_test_database
           self.new.create_test_database
         end
@@ -72,6 +76,7 @@ module GemSuit
             execute "bundle install", "(this can take several minutes...)"
           else
             puts "Running `bundle install` (this can take several minutes...)".yellow
+            puts "(in #{root_path})"
             `cd #{root_path} && bundle install`
           end
         end

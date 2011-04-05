@@ -70,6 +70,14 @@ module GemSuit
 
         # `suit fit`
 
+        def bundle_install_apps
+          Dir["suit/rails-*/dummy"].each do |rails_root|
+            require File.expand_path("test/suit_application.rb", rails_root)
+            SuitApplication.bundle_install
+            Object.send :remove_const, :SuitApplication
+          end
+        end
+
         def rake_install
           return if Dir["rails_generators"].empty?
           cmd = "rake install"
@@ -80,6 +88,7 @@ module GemSuit
 
         def ask_mysql_password
           return unless suit_config.mysql?
+
           log "Setting up the MySQL test database".green
           log "To be able to run integration tests (with Capybara in Firefox) we need to store your MySQL password in a git-ignored file (suit/shared/mysql)"
           log "Please provide the password of your MySQL root user: (press Enter when blank)", true
