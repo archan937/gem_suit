@@ -74,7 +74,7 @@ module GemSuit
     end
 
     desc "fit", "Establish the GemSuit in your environment"
-    method_options [:rake_install, "-r"] => true, [:verbose, "-v"] => false
+    method_options [:rake_install, "-i"] => true, [:verbose, "-v"] => false
     def fit
       assert_suit_dir
       bundle_install_apps
