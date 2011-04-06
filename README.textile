@@ -6,7 +6,11 @@ h2. Introduction
 
 We Rails developers are experiencing great evolvements at the moment: not only are we migrating from Ruby 1.8 to Ruby 1.9, but we are also migrating from Rails 2.3 to Rails 3. This means that Rails gem writers have to deal with this. Luckily, there is "Rich-Support":https://github.com/archan937/rich_support which provides Rails 2 and 3 compatibility to your Rails gem, but you also want to be able to run integration tests within a Rails 2 and 3 environment.
 
-And so this is where GemSuit kicks in: it provides an extensive test suite to a (newly generated or existing) gem in which you can test the whole gem usage process. From a clean Rails (2 or 3) application, to running your gem generators, to testing your front-end with Capybara. A real world example of a GemSuit implementation is "Rich-CMS":https://github.com/archan937/rich_cms.
+And so this is where GemSuit kicks in: it provides an extensive test suite to a (newly generated or existing) gem in which you can test the whole gem usage process. From a clean Rails (2 or 3) application, to running your gem generators, to testing your front-end within Firefox with Capybara.
+
+GemSuit is TestUnit, Shoulda (mainly for contexts), Capybara and Selenium driven and it also provides you to run the Rails (2 or 3) server and console (for development and testing purposes) very easily!
+
+A real world example of a GemSuit implementation is "Rich-CMS":https://github.com/archan937/rich_cms/tree/edge.
 
 h2. Installation
 
