@@ -47,7 +47,7 @@ module GemSuit
         def root_path
           (@root_path || (Rails.root if defined? Rails) || begin
             dir = File.expand_path "../..", self.class.__file__
-            File.exists?("#{dir}/config/environment.rb") ? dir : Dir["#{dir}/../rails-*/dummy"].last
+            File.exists?("#{dir}/config/environment.rb") ? dir : Dir[File.expand_path("#{dir}/../rails-*/dummy")].last
           end).to_s.tap do |path|
             validate_root_path! path if validate_root_path
             self.class.source_root = path
