@@ -70,21 +70,6 @@ module GemSuit
           run_environment
         end
 
-        def bundle_install
-          return unless bundle_install?
-          if verbose
-            execute "bundle install", "(this can take several minutes...)"
-          else
-            puts "Running `bundle install` (this can take several minutes...)".yellow
-            puts "(in #{root_path})"
-            `cd #{root_path} && bundle install`
-          end
-        end
-
-        def bundle_install?
-          `cd #{root_path} && bundle check`.any?{|line| line.include? "`bundle install`"}
-        end
-
         def prepare_database
           return if @db_prepared
           if @ran_generator

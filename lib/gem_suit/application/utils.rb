@@ -22,6 +22,21 @@ module GemSuit
       module InstanceMethods
         attr_accessor :root_path, :validate_root_path
 
+        def bundle_install
+          return unless bundle_install?
+          if verbose
+            execute "bundle install", "(this can take several minutes...)"
+          else
+            puts "Running `bundle install` (this can take several minutes...)".yellow
+            puts "(in #{root_path})"
+            `cd #{root_path} && bundle install`
+          end
+        end
+
+        def bundle_install?
+          `cd #{root_path} && bundle check`.any?{|line| line.include? "`bundle install`"}
+        end
+
         def validate_root_path!(path)
           unless path.match(/rails-\d/)
             log "Running a #{self.class.name} instance from an invalid path: '#{path}' needs to match ".red + "/rails-\\d/".yellow
