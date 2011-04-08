@@ -7,8 +7,3 @@ module ActionController
     include Capybara
   end
 end
-
-Capybara.register_driver(driver = :"selenium_firefox") do |app|
-  Capybara::Driver::Selenium.new app, :profile => "capybara"
-end
-Capybara.default_driver = driver

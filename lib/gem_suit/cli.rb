@@ -82,7 +82,6 @@ module GemSuit
       ask_mysql_password
       create_mysql_test_database
       create_development_databases
-      print_capybara_instructions
     end
 
     desc "restore", "Restore all files within the GemSuit test applications"

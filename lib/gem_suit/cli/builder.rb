@@ -129,11 +129,6 @@ module GemSuit
             execute cmd
           end
         end
-
-        def print_capybara_instructions
-          return unless suit_config.capybara?
-          log File.read(File.expand_path("../builder/capybara", __FILE__)).colorize, true
-        end
       end
 
     end
