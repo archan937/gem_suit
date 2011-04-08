@@ -77,6 +77,7 @@ module GemSuit
     method_options [:rake_install, "-i"] => true, [:verbose, "-v"] => false
     def fit
       assert_suit_dir
+      restore
       bundle_install_apps
       rake_install if options.rake_install?
       ask_mysql_password
