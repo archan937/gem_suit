@@ -8,10 +8,6 @@ module GemSuit
       end
 
       module ClassMethods
-        def bundle_install
-          self.new.bundle_install
-        end
-
         def create_test_database
           self.new.create_test_database
         end

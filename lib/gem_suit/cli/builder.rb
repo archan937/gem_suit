@@ -72,9 +72,9 @@ module GemSuit
 
         def bundle_install_apps
           Dir["suit/rails-*/dummy"].each do |rails_root|
+            Object.send :remove_const, :SuitApplication
             require File.expand_path("test/suit_application.rb", rails_root)
             SuitApplication.bundle_install
-            Object.send :remove_const, :SuitApplication
           end
         end
 

@@ -17,6 +17,10 @@ module GemSuit
         def inherited(klass)
           klass.__file__ = caller.first[/^[^:]+/]
         end
+
+        def bundle_install
+          self.new.bundle_install
+        end
       end
 
       module InstanceMethods
