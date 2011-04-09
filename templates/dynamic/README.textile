@@ -11,7 +11,7 @@ h2. Installation
 Run the following command in your console:
 
 <pre>
-  gem install "<%= gem_name %>"
+  gem install <%= gem_name %>
 </pre>
 
 h2. Usage

@@ -50,7 +50,7 @@ module GemSuit
         end
 
         def latest
-          [`rails -v`.match(/\d\.\d+\.\d+/).to_s, "3.0.5"].max
+          [`rails -v`.match(/\d\.\d+\.\d+/).to_s, "3.0.6"].max
         end
 
         def target_dir

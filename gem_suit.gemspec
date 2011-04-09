@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Paul Engel"]
   s.email       = ["paul.engel@holder.nl"]
   s.homepage    = "https://github.com/archan937/gem_suit"
-  s.summary     = %q{Provide an extensive test suite (with Rails 2 and 3 integration tests) to a newly generated or existing gem}
-  s.description = %q{Provide an extensive test suite (with Rails 2 and 3 integration tests) to a newly generated or existing gem}
+  s.summary     = %q{Test the entire usage workflow (including the generators) of your newly generated or existing gem within Rails 2 and 3}
+  s.description = %q{Test the entire usage workflow (including the generators) of your newly generated or existing gem within Rails 2 and 3}
 
   s.rubyforge_project = "gem_suit"
 

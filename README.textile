@@ -1,6 +1,8 @@
 h1. GemSuit
 
-Provide an extensive test suite (with Rails 2 and 3 integration tests) to a newly generated or existing gem
+Test the *entire* usage workflow (including the generators) of your newly generated or existing gem within Rails 2 and 3.
+
+As Barney Stinson advises: *"Gem suit up! It's gonna be legend"* ^^
 
 h2. Introduction
 
@@ -8,19 +10,46 @@ We Rails developers are experiencing great evolvements at the moment: not only a
 
 And so this is where GemSuit kicks in: it provides an extensive test suite to a (newly generated or existing) gem in which you can test the whole gem usage process. From a clean Rails (2 or 3) application, to running your gem generators, to testing your front-end within Firefox with Capybara.
 
-GemSuit is TestUnit, Shoulda (mainly for contexts), Capybara and Selenium driven and it also provides you to run the Rails (2 or 3) server and console (for development and testing purposes) very easily!
+GemSuit is "TestUnit":http://test-unit.rubyforge.org/, "Shoulda":https://github.com/thoughtbot/shoulda (mainly for contexts), "Capybara":https://github.com/jnicklas/capybara and "Selenium":http://seleniumhq.org/ driven and it also provides you to run the Rails (2 or 3) server and console (for development and testing purposes) very easily!
+
+h3. So what can I test exactly?
+
+As already mentioned, GemSuit really aims on testing the entire process of using your gem in a Rails app. A GemSuit integration test can consist of the following steps:
+
+# Start with a clean Rails (2 or 3) application (as if you just ran @rails new your_rails_app@)
+# Prep certain files (e.g. initializers) using Thor's template generation capabilities
+# Run several generators provided with your gem
+# Load fixtures
+# Open the Rails app in the browser and run assertions (with Capybara in Firefox)
+
+And also you can run unit tests (and the other standard tests) within Rails 2 and 3.
 
 A real world example of a GemSuit implementation is "Rich-CMS":https://github.com/archan937/rich_cms/tree/edge.
+
+h2. Quickstart
+
+Run the following in your terminal:
+
+<pre>
+  $ gem install gem_suit
+  $ suit tailor your_new_gem
+  $ cd your_new_gem
+  $ suit -v
+</pre>
+
+*Note*: Make sure you have "Firefox":www.getfirefox.com installed.
 
 h2. Installation
 
 Run the following command in your console:
 
 <pre>
-  gem install "gem_suit"
+  gem install gem_suit
 </pre>
 
-h2. Generating a new gem
+h2. Provide your gem with GemSuit
+
+h3. Generating a new gem
 
 Run the following command to create a gem with Bundler and the GemSuit test suite:
 
@@ -28,7 +57,9 @@ Run the following command to create a gem with Bundler and the GemSuit test suit
   suit tailor your_gem_name
 </pre>
 
-h2. For an already created gem
+*Note*: What @suit tailor@ actually does, is: @bundle gem your_gem_name@, @cd your_gem_name@, @suit up@ and finally @suit fit@.
+
+h3. For an already created gem
 
 Run the following command within your gem directory (e.g. in @Gems/rich_cms@ for the gem Rich-CMS)
 
@@ -36,9 +67,340 @@ Run the following command within your gem directory (e.g. in @Gems/rich_cms@ for
   suit up
 </pre>
 
-h2. And now what?
+Your gem is now provided with GemSuit ^^
 
-Lorem ipsum.
+<img src="http://codehero.es/images/barney-suit_up_small.jpg"/>
+
+h2. Great. But now what?
+
+h3. Developing your gem
+
+After you have made your gem a little bit more legend, you can start developing your gem with the Rails 2 and 3 dummy applications provided (within @suit/rails-{2,3}/dummy@). This makes the gem development very mobile as you can commit them (with the Sqlite databases) in your Git repository! Just run the following to start the Rails 3 server:
+
+<pre>
+  suit s
+</pre>
+
+Run the Rails 2 server on port @3001@ as follows:
+
+<pre>
+  suit s -r2 -p3001
+</pre>
+
+You can also start the Rails console (Rails 3 at default) of the dummy applications (use @-r2@ to use the Rails 2 console):
+
+<pre>
+  suit c
+</pre>
+
+h3. Making your gem development mobile
+
+It is possible that you will have to develop your gem on another computer or that there are multiple developers (and thus coping with different computers). As mentioned in the previous section, everything is added to the Git repository. The only pitfall can be that the computer is not prepped for the gem development. Think of not having all the gem dependecies installed.
+
+Just check out the gem Git repository and "fit the GemSuit" with @suit fit@. With "Rich-CMS":https://github.com/archan937/rich_cms/tree/edge as example, run the following:
+
+<pre>
+  $ git clone https://github.com/archan937/rich_cms.git
+  $ cd rich_cms
+  $ suit fit -v
+</pre>
+
+h2. Testing with GemSuit
+
+h3. Running the GemSuit integration tests (with Capybara and Selenium)
+
+To run the integration tests just run the following:
+
+<pre>
+  suit -v
+</pre>
+
+*Note*: The @-v@ option outputs a summary of the test results. You can also run the tests with just @suit@ for no additional output or @suit -w@ for very verbose output.
+
+h3. Restoring the Rails dummy applications
+
+GemSuit uses the dummy applications for the integration tests by stashing and restoring its source files. When a test fails, the state of the Rails application directory stays as it is during the test. To reset the dummy application, just run the following command:
+
+<pre>
+  suit restore
+</pre>
+
+h3. Running unit (and the common) tests with Rails 2 and 3
+
+The standard Rails provided tests can be run with:
+
+<pre>
+  suit test unit
+</pre>
+
+To only run Rails 3 tests, use the following:
+
+<pre>
+  suit test unit -r3
+</pre>
+
+h2. Writing GemSuit integration tests
+
+h3. A real world example
+
+Please explore "https://github.com/archan937/rich_cms/tree/edge/suit":https://github.com/archan937/rich_cms/tree/edge/suit for examples of the GemSuit integration test possibilities.
+
+h3. The provided ExampleTest
+
+After running @suit up@ (or @suit tailor@ when creating a new gem), you will have @suit/shared/test/integration/suit/example.rb@ at your disposal. As you might have guessed, this is an example for a GemSuit integration test. You can see it in action by running:
+
+<pre>
+  suit -v
+</pre>
+
+h3. Essential sources and directories
+
+Certain sources (and directories) are essential when writing a GemSuit integration test:
+
+h4. suit/shared/test/integration/suit/*.rb
+
+&nbsp;&nbsp; This directory contains all the GemSuit integration tests.
+&nbsp;&nbsp; At default it is provided with @example.rb@, "an example":https://github.com/archan937/rich_cms/tree/edge/suit/shared/test/integration/suit
+
+h4. suit/shared/test/suit_application/==**/*.*==
+
+&nbsp;&nbsp; Source files within this directory will be required when running tests.
+&nbsp;&nbsp; You are supposed to put additional @lib@ sources for testing purposes in here: "an example":https://github.com/archan937/rich_cms/blob/edge/suit/shared/test/suit_application/rich/i18n_forgery.rb
+
+h4. suit/shared/test/suit_application/capybara_extensions.rb
+
+&nbsp;&nbsp; This source file contains helper methods when running the GemSuit integration test with Capybara.
+&nbsp;&nbsp; Think of logging in, logging out and filling in a form: "an example":https://github.com/archan937/rich_cms/blob/edge/suit/shared/test/suit_application/capybara_extensions.rb
+
+h4. suit/shared/test/suit_application.rb
+
+&nbsp;&nbsp; The role of @SuitApplication@ is to prepare and restore the dummy application when running a GemSuit integration test.
+&nbsp;&nbsp; Think of calling Rails generators, generating files with Thor and providing variables when compiling templates: "an example":https://github.com/archan937/rich_cms/blob/edge/suit/shared/test/suit_application.rb
+
+h4. suit/shared/test/templates/==**/*.*==
+
+&nbsp;&nbsp; The templates used by SuitApplication (and thus Thor) when generating files for test preparations.
+&nbsp;&nbsp; You can write shared / Rails 2 specific / Rails 3 specific templates, "an example":https://github.com/archan937/rich_cms/tree/edge/suit/templates
+
+h3. A GemSuit integration test
+
+It is actually a simple @ActionController::IntegrationTest@ which requires @suit_application.rb@ instead of the regular @test_helper.rb@.
+Also, two methods of @SuitApplication@ are called:
+
+* @SuitApplication.test@ - Prepare the Rails dummy application for a certain environment (you can pass options to @SuitApplication@)
+* @SuitApplication.restore_all@ - Restore the Rails dummy application source files after running the integration test
+
+The basic structure:
+
+<pre>
+require File.expand_path("../../../suit_application.rb", __FILE__)
+
+SuitApplication.test :some => :variable
+
+class YourGemSuitIntegrationTest < ActionController::IntegrationTest
+
+  context "My example test" do
+    setup do
+      # prepare something
+    end
+
+    teardown do
+      SuitApplication.restore_all
+    end
+
+    should "pass" do
+      # visit some pages
+      # click some links and fill in some forms
+      # assert some statements
+    end
+  end
+
+end
+</pre>
+
+h3. SuitApplication class
+
+This class prepares and restores the Rails dummy application when running a GemSuit integration test. You can leave it as is, but that wouldn't be fun.
+
+*Note*: See "https://github.com/archan937/rich_cms/blob/edge/suit/shared/test/suit_application.rb":https://github.com/archan937/rich_cms/blob/edge/suit/shared/test/suit_application.rb for a real world example.
+
+The following examples are combination with this GemSuit integration test:
+
+<pre>
+require File.expand_path("../../../suit_application.rb", __FILE__)
+
+SuitApplication.test :authentication => :devise
+
+class YourGemSuitIntegrationTest < ActionController::IntegrationTest
+...
+</pre>
+
+h4. Describe your test
+
+This is the description used for a reference to the integration test. At default, GemSuit derives it based on the file name of the integration test.
+
+<pre>
+  def description
+    case authentication
+    when :devise
+      "Devise authenticated"
+    else
+      "Non-authenticated"
+    end
+  end
+</pre>
+
+h4. Prepare your Rails dummy application with Thor
+
+This is where you are supposed to run your generators and generate files using templates. You can also prevent source files from automatically included (which is the case for @test/suit_application/*.rb*@).
+
+<pre>
+  def prepare
+    case authentication
+    when :devise
+      generate_devise_user
+      correct_devise_config
+    end
+    skip :require, "test/suit_application/i18n_forgery.rb"
+  end
+
+  def locals_for_template(path)
+    case path
+    when "the/path/to/a/certain/template"
+      {:some_template_variable => "some_value"}
+    end
+  end
+
+private
+
+  def generate_cms_content
+    generate "devise:install"
+    generate "devise", "User"
+  end
+
+  def correct_devise_config
+    return unless authentication == :devise
+
+    devise_config = expand_path("config/initializers/devise.rb")
+    lines         = File.open(devise_config).readlines
+    pepper        = "a26c248ff40b12f4e396c1d33168408e2f442c3b6288df70ca46c340db3f1f2f7aa80ec37867ddfd602a185deda0b5efb27ecd8f7541b97d7c02e9485bbb57fd"
+
+    log :correcting, devise_config
+    File.open(devise_config, "w") do |file|
+      lines.each do |line|
+        file << line.gsub(/(config\.pepper = ").*(")/, "config.pepper = \"#{pepper}\"")
+      end
+    end
+  end
+</pre>
+
+h4. Stash and restore files
+
+As you might have guessed, files are being stashed *before* testing and restored *after* testing.
+
+<pre>
+  def restore_files
+    delete "config/locales/devise.en.yml"
+    delete "db/migrate/*.rb"
+    delete "test/fixtures/devise_users.yml"
+    delete "test/unit/devise_user_test.rb"
+  end
+
+  def stash_files
+    delete "db/migrate/*.rb"
+    stash  "app/models/*.rb"
+    stash  "config/initializers/devise.rb"
+  end
+</pre>
+
+h3. Capybara extensions
+
+You can define helper methods for the integration tests when running with Capybara in @capybara_extensions.rb@.
+Think of actions such as logging in, logging out and filling in forms:
+
+<pre>
+module ActionController
+  class IntegrationTest
+
+    def login
+      visit "/cms"
+      page.execute_script "$('div#rich_cms_dock a.login').click()"
+      fill_in_and_submit "#raccoon_tip", {:Email => "paul.engel@holder.nl", :Password => "testrichcms"}, "Login"
+    end
+
+    def logout
+      find("#rich_cms_dock").click_link "Logout"
+    end
+
+    def mark_content
+      page.execute_script "$('div#rich_cms_dock a.mark').click()"
+    end
+
+    def edit_content(key)
+      page.execute_script "$('.rcms_content.marked[data-store_key=" + key + "]').click()"
+      assert find("#raccoon_tip").visible?
+    end
+
+    def fill_in_and_submit(selector, with, submit)
+      within "#{selector} fieldset.inputs" do
+        with.each do |key, value|
+          begin
+            fill_in key.to_s, :with => value
+          rescue Selenium::WebDriver::Error::ElementNotDisplayedError
+            page.execute_script "var input = $('#{selector} [name=\"#{key}\"]');" +
+                                "if (input.data('cleditor')) {" +
+                                "  input.val('#{value}');" +
+                                "  input.data('cleditor').updateFrame();" +
+                                "}"
+          end
+        end
+      end
+      find(selector).find_button(submit).click
+      sleep 2
+    end
+
+  end
+end
+</pre>
+
+h2. Writing the "common" unit tests
+
+The unit tests have to be located within @suit/shared/test/unit/@. Run the tests as mentioned earlier with @suit test unit@.
+
+h2. Getting more info with Thor
+
+As the GemSuit command line interface (CLI) is built with "@wycats":http://twitter.com/wycats "Thor":https://github.com/wycats/thor gem, you can use the @suit help@ command in your terminal:
+
+<pre>
+  $ suit help
+  Tasks:
+  suit bundle [COMMAND]        # Run `bundle install` when needed at default or run the specified Bundler command
+  suit config [global]         # Configure GemSuit within your gem (use `suit config global` for global config)
+  suit console [ENVIRONMENT]   # Start one of the GemSuit test application consoles
+  suit fit                     # Establish the GemSuit in your environment
+  suit help [TASK]             # Describe available tasks or one specific task
+  suit rake TASK               # Run rake task within one of the GemSuit test applications
+  suit restore                 # Restore all files within the GemSuit test applications
+  suit server [ENVIRONMENT]    # Start one of the GemSuit test application servers
+  suit tailor NAME             # Generate a Bundler gem and provide it with GemSuit
+  suit test [SECTION] [FILES]  # Run GemSuit (suit, unit, functional, integration) tests
+  suit up                      # Provide an existing gem with GemSuit
+  suit write                   # Write all files within the GemSuit test applications
+</pre>
+
+To get info about the options of a command, narrow the output to that command. Just type @suit help <command>@:
+
+<pre>
+  $ suit help server
+  Usage:
+    suit server [ENVIRONMENT]
+
+  Options:
+    -p, [--port=PORT]
+    -r, [--rails-version=RAILS_VERSION]
+
+  Start one of the GemSuit test application servers
+</pre>
 
 h2. Contact me
 

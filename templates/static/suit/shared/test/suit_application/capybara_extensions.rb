@@ -28,5 +28,9 @@ module ActionController
     #   sleep 2
     # end
 
+    # def say_hello
+    #   page.execute_script "Hello, you!"
+    # end
+
   end
 end

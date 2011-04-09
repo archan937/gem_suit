@@ -44,6 +44,7 @@ module GemSuit
       end.compact.join " "
 
       system "suit fit #{opts} --no-rake_install"
+      puts "Barney Stinson says: 'Cheers! Your gem just got a little more legend!'".green
     end
 
     desc "config [global]", "Configure GemSuit within your gem (use `suit config global` for global config)"
