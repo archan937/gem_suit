@@ -1,6 +1,6 @@
 h1. GemSuit
 
-Test the *entire* usage workflow (including the generators) of your newly generated or existing gem within Rails 2 and 3.
+Test the *entire* usage workflow (including the generators) of your newly generated or existing gem within Rails 2 and 3 and make the gem development mobile.
 
 As Barney Stinson advises: *"Gem suit up! It's gonna be legend"* ^^
 
