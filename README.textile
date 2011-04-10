@@ -374,18 +374,16 @@ As the GemSuit command line interface (CLI) is built with "@wycats":http://twitt
 <pre>
   $ suit help
   Tasks:
-  suit bundle [COMMAND]        # Run `bundle install` when needed at default or run the specified Bundler command
-  suit config [global]         # Configure GemSuit within your gem (use `suit config global` for global config)
-  suit console [ENVIRONMENT]   # Start one of the GemSuit test application consoles
-  suit fit                     # Establish the GemSuit in your environment
-  suit help [TASK]             # Describe available tasks or one specific task
-  suit rake TASK               # Run rake task within one of the GemSuit test applications
-  suit restore                 # Restore all files within the GemSuit test applications
-  suit server [ENVIRONMENT]    # Start one of the GemSuit test application servers
-  suit tailor NAME             # Generate a Bundler gem and provide it with GemSuit
-  suit test [SECTION] [FILES]  # Run GemSuit (suit, unit, functional, integration) tests
-  suit up                      # Provide an existing gem with GemSuit
-  suit write                   # Write all files within the GemSuit test applications
+    suit bundle                  # Run `bundle install` (should be invoked from a Rails dummy application) only when necessary (used for testing)
+    suit config [global]         # Configure GemSuit within your gem (use `suit config global` for global config)
+    suit console [ENVIRONMENT]   # Start one of the GemSuit test application consoles
+    suit fit                     # Establish the GemSuit in your environment
+    suit help [TASK]             # Describe available tasks or one specific task
+    suit restore                 # Restore all files within the GemSuit test applications
+    suit server [ENVIRONMENT]    # Start one of the GemSuit test application servers
+    suit tailor NAME             # Generate a Bundler gem and provide it with GemSuit
+    suit test [SECTION] [FILES]  # Run GemSuit (suit, unit, functional, integration) tests
+    suit up                      # Provide an existing gem with GemSuit
 </pre>
 
 To get info about the options of a command, narrow the output to that command. Just type @suit help <command>@:

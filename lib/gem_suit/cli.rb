@@ -47,6 +47,25 @@ module GemSuit
       puts "Barney Stinson says: 'Cheers! Your gem just got a little more legend!'".green
     end
 
+    # desc "check", "Check whether GemSuit requirements are satisfied"
+    # def check
+    #   assert_suit_dir
+    #   # Do we have all the Rails dummy apps installed?
+    #   # Barney says: 'Your gem is already awesome' || Barney says: 'Run `suit up` to be more legend'
+    # end
+
+    desc "fit", "Establish the GemSuit in your environment"
+    method_options [:rake_install, "-i"] => true, [:verbose, "-v"] => false
+    def fit
+      assert_suit_dir
+      restore
+      bundle_install_apps
+      rake_install if options.rake_install?
+      ask_mysql_password
+      create_mysql_test_database
+      create_development_databases
+    end
+
     desc "config [global]", "Configure GemSuit within your gem (use `suit config global` for global config)"
     method_options [:rails_versions, "-r"] => :array, [:mysql, "-m"] => :boolean, [:capybara, "-c"] => :boolean
     def config(env = nil)
@@ -74,42 +93,6 @@ module GemSuit
       end
     end
 
-    desc "fit", "Establish the GemSuit in your environment"
-    method_options [:rake_install, "-i"] => true, [:verbose, "-v"] => false
-    def fit
-      assert_suit_dir
-      restore
-      bundle_install_apps
-      rake_install if options.rake_install?
-      ask_mysql_password
-      create_mysql_test_database
-      create_development_databases
-    end
-
-    desc "restore", "Restore all files within the GemSuit test applications"
-    method_options [:verbose, "-v"] => false
-    def restore
-      files :restore
-    end
-
-    desc "write", "Write all files within the GemSuit test applications"
-    method_options [:verbose, "-v"] => false
-    def write
-      files :write
-    end
-
-    desc "test [SECTION] [FILES]", "Run GemSuit (suit, unit, functional, integration) tests"
-    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
-    def test(section = "suit", file_or_pattern = nil)
-      if Application::InstanceMethods.instance_methods.include?(method = "test_#{section}")
-        send method, file_or_pattern
-      elsif file_or_pattern.nil?
-        test_suit section
-      else
-        raise Error, "Unrecognized test section '#{section}'. Either leave it empty or pass 'suit', 'unit', 'functional' or 'integration'"
-      end
-    end
-
     desc "server [ENVIRONMENT]", "Start one of the GemSuit test application servers"
     method_options [:rails_version, "-r"] => :integer, [:port, "-p"] => :integer
     map "s" => :server
@@ -124,21 +107,31 @@ module GemSuit
       rails :console, environment
     end
 
-    desc "rake TASK", "Run rake task within one of the GemSuit test applications"
-    method_options [:rails_version, "-r"] => :integer, [:environment, "-e"] => "development"
-    map "r" => :rake
-    def rake(task)
-      rails :rake, options.environment, task
+    desc "test [SECTION] [FILES]", "Run GemSuit (suit, unit, functional, integration) tests"
+    method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
+    def test(section = "suit", file_or_pattern = nil)
+      if Application::InstanceMethods.instance_methods.include?(method = "test_#{section}")
+        send method, file_or_pattern
+      elsif file_or_pattern.nil?
+        test_suit section
+      else
+        raise Error, "Unrecognized test section '#{section}'. Either leave it empty or pass 'suit', 'unit', 'functional' or 'integration'"
+      end
     end
 
-    desc "bundle [COMMAND]", "Run `bundle install` when needed at default or run the specified Bundler command"
-    def bundle(command = "install")
-      if command == "install" && `bundle check`.any?{|line| line.include? "`bundle install`"}
+    desc "restore", "Restore all files within the GemSuit test applications"
+    method_options [:verbose, "-v"] => false
+    def restore
+      files :restore
+    end
+
+    desc "bundle", "Run `bundle install` (should be invoked from a Rails dummy application) only when necessary (used for testing)"
+    def bundle
+      assert_rails_dir
+      if `bundle check`.any?{|line| line.include? "`bundle install`"}
         puts "Running `bundle install` (this can take several minutes...)".yellow
-      else
-        return
+        system "bundle install"
       end
-      system "bundle #{command}"
     end
 
   private

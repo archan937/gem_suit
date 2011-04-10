@@ -45,6 +45,12 @@ module GemSuit
             end
           end
 
+          def assert_rails_dir
+            unless File.expand_path("").match /suit\/rails-\d\/dummy$/
+              raise Error, "Current directory path does not match \"/suit/rails-{2,3}/dummy\". Is this really a GemSuit dummy app?"
+            end
+          end
+
           def major_rails_versions
             Dir["suit/rails-*"].collect{|dir| dir.match(/rails-(\d)/); $1}
           end

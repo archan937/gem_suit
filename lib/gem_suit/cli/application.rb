@@ -85,12 +85,7 @@ module GemSuit
 
           rails_version = (options.rails_version || major_rails_versions.last).to_i
           root_path     = File.expand_path "suit/rails-#{rails_version}/dummy"
-          command       = case command
-                          when :rake
-                            "rake #{args}"
-                          else
-                            {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
-                          end
+          command       = {2 => "script/#{command}", 3 => "rails #{command.to_s[0, 1]}"}[rails_version]
 
           require "suit/rails-#{rails_version}/dummy/test/suit_application.rb"
           SuitApplication.new(:verbose => options.verbose?).bundle_install
