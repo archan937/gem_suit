@@ -2,8 +2,8 @@
 
 require "capybara/rails"
 
-module ActionController
-  class IntegrationTest
+module GemSuit
+  class IntegrationTest < ::ActionController::IntegrationTest
     include Capybara
   end
 end

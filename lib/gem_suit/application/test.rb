@@ -85,11 +85,11 @@ module GemSuit
           require "#{"rails/" if Rails::VERSION::MAJOR >= 3}test_help"
 
           begin
-            require "gem_suit/actioncontroller"
+            require "gem_suit/integration_test"
           rescue LoadError
             gem_suit_path = File.expand_path "../../..", __FILE__
             $:.unshift gem_suit_path
-            require "gem_suit/actioncontroller"
+            require "gem_suit/integration_test"
           end
 
           Dir[File.expand_path("../#{File.basename(self.class.__file__, ".rb")}/**/*.rb", self.class.__file__)].each do |file|

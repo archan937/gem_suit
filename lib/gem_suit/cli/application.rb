@@ -98,8 +98,6 @@ module GemSuit
           system "cd #{root_path} && RAILS_ENV=#{environment} #{command} #{"-p #{options.port}" if options.port}"
         end
 
-      private
-
         MAJOR_RAILS_VERSIONS = [2, 3]
         DESCRIPTION_MATCH    = /^Setting up test environment for (.*)$/
         LOAD_MATCH           = /^Loaded suite suit\/rails-(\d+)\/dummy\/test\/integration\/suit\/(.*)$/
