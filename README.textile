@@ -6,7 +6,7 @@ As Barney Stinson advises: *"Gem suit up! It's gonna be legend"* ^^
 
 h2. Introduction
 
-We Rails developers are experiencing great evolvements at the moment: not only are we migrating from Ruby 1.8 to Ruby 1.9, but we are also migrating from Rails 2.3 to Rails 3. This means that Rails gem writers have to deal with this. Luckily, there is "Rich-Support":https://github.com/archan937/rich_support which provides Rails 2 and 3 compatibility to your Rails gem, but you also want to be able to run integration tests within a Rails 2 and 3 environment.
+We Rails developers are experiencing great evolvements at the moment: not only are we migrating from Ruby 1.8 to Ruby 1.9, but we are also migrating from Rails 2.3 to Rails 3. This means that Rails gem writers have to deal with this. Luckily, there is "Rich-Support":https://github.com/archan937/rich_support which provides Rails 2 and 3 compliance to your Rails gem, but you also want to be able to run integration tests within a Rails 2 and 3 environment.
 
 And so this is where GemSuit kicks in: it provides an extensive test suite to a (newly generated or existing) gem in which you can test the whole gem usage process. From a clean Rails (2 or 3) application, to running your gem generators, to testing your front-end within Firefox with Capybara.
 
@@ -18,11 +18,11 @@ As already mentioned, GemSuit really aims on testing the entire process of using
 
 # Start with a clean Rails (2 or 3) application (as if you just ran @rails new your_rails_app@)
 # Prep certain files (e.g. initializers) using Thor's template generation capabilities
-# Run several generators provided with your gem
+# Run several generators provided by your gem
 # Load fixtures
 # Open the Rails app in the browser and run assertions (with Capybara in Firefox)
 
-And also you can run unit tests (and the other standard tests) within Rails 2 and 3.
+And also you can run unit tests (and the other standard tests) within both Rails 2 and 3.
 
 A real world example of a GemSuit implementation is "Rich-CMS":https://github.com/archan937/rich_cms/tree/edge.
 
@@ -37,7 +37,7 @@ Run the following in your terminal:
   $ suit -v
 </pre>
 
-*Note*: Make sure you have "Firefox":www.getfirefox.com installed.
+*Note*: Make sure you have "Firefox":http://www.getfirefox.com installed.
 
 h2. Installation
 
@@ -147,7 +147,7 @@ Please explore "https://github.com/archan937/rich_cms/tree/edge/suit":https://gi
 
 h3. The provided ExampleTest
 
-After running @suit up@ (or @suit tailor@ when creating a new gem), you will have @suit/shared/test/integration/suit/example.rb@ at your disposal. As you might have guessed, this is an example for a GemSuit integration test. You can see it in action by running:
+After running @suit up@ (or @suit tailor@ when creating a new gem), you will have @suit/shared/test/integration/suit/example.rb@ at your disposal. As you might have guessed, this is an example of a GemSuit integration test. You can see it in action by running:
 
 <pre>
   suit -v
@@ -256,12 +256,12 @@ This is where you are supposed to run your generators and generate files using t
 
 <pre>
   def prepare
-    case authentication
+    case config[:authentication]
     when :devise
       generate_devise_user
       correct_devise_config
     end
-    skip :require, "test/suit_application/i18n_forgery.rb"
+    skip :require, "test/suit_application/rich/i18n_forgery.rb"
   end
 
   def locals_for_template(path)
@@ -273,14 +273,12 @@ This is where you are supposed to run your generators and generate files using t
 
 private
 
-  def generate_cms_content
+  def generate_devise_user
     generate "devise:install"
     generate "devise", "User"
   end
 
   def correct_devise_config
-    return unless authentication == :devise
-
     devise_config = expand_path("config/initializers/devise.rb")
     lines         = File.open(devise_config).readlines
     pepper        = "a26c248ff40b12f4e396c1d33168408e2f442c3b6288df70ca46c340db3f1f2f7aa80ec37867ddfd602a185deda0b5efb27ecd8f7541b97d7c02e9485bbb57fd"
@@ -399,6 +397,10 @@ To get info about the options of a command, narrow the output to that command. J
 
   Start one of the GemSuit test application servers
 </pre>
+
+h2. So where are the tests?
+
+As GemSuit is very focused on the command line and file generation, it is hard (but not impossible) to write tests. So therefore my test case is the entire "Rich-CMS":http://github.com/archan937/rich_cms gem. I am using GemSuit for all of its development and testing purposes.
 
 h2. Contact me
 
