@@ -59,6 +59,7 @@ module GemSuit
     def fit
       assert_suit_dir
       restore
+      bundle_install
       bundle_install_apps
       rake_install if options.rake_install?
       ask_mysql_password

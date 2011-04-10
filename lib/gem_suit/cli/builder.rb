@@ -70,6 +70,13 @@ module GemSuit
 
         # `suit fit`
 
+        def bundle_install
+          return if `bundle check`.none?{|line| line.include? "`bundle install`"}
+          puts "Running `bundle install` (this can take several minutes...)".yellow
+          puts "(in #{File.expand_path("")})"
+          `bundle install`
+        end
+
         def bundle_install_apps
           Dir["suit/rails-*/dummy"].each do |rails_root|
             Object.send :remove_const, :SuitApplication
