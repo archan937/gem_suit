@@ -11,10 +11,10 @@ class SuitApplication < GemSuit::Application
   #   generate_something
   # end
 
-  # def config_for_template(path)
+  # def locals_for_template(path)
   #   case path
   #   when "Gemfile"
-  #     {"rails_gem_version" => "3.0.5"}
+  #     {:rails_gem_version => "3.0.6"}
   #   end
   # end
 
