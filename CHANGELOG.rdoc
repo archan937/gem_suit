@@ -1,5 +1,11 @@
 = GemSuit CHANGELOG
 
+== Version 0.1.1 (April 23, 2011)
+
+* Added suit test {functional,integration,all}
+* Improved `suit bundle` (running bundle install within gem dir and rails dummy app dirs only when required)
+* Corrected generated suit_application.rb comment
+
 == Version 0.1.0 (April 13, 2011)
 
 * Initial release
