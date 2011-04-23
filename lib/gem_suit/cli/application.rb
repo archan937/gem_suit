@@ -10,6 +10,13 @@ module GemSuit
 
       module InstanceMethods
 
+        def test_all(file_or_pattern = nil)
+          test_unit
+          test_functional
+          test_integration
+          test_suit
+        end
+
         def test_suit(file_or_pattern = nil)
           assert_suit_dir
 
@@ -29,6 +36,22 @@ module GemSuit
         end
 
         def test_unit(file_or_pattern = nil)
+          run_tests :unit, file_or_pattern
+        end
+
+        def test_functional(file_or_pattern = nil)
+          run_tests :functional, file_or_pattern
+        end
+
+        def test_integration(file_or_pattern = nil)
+          run_tests :integration, file_or_pattern
+        end
+
+      private
+
+        def run_tests(type, file_or_pattern)
+          raise ArgumentError, "Only :unit, :functional and :integration are allowed" unless [:unit, :functional, :integration].include? type
+
           assert_suit_dir
 
           loader = File.expand_path "../application/test_loader.rb", __FILE__
@@ -37,33 +60,35 @@ module GemSuit
             buffer.execute "suit restore"
 
             match = Dir[File.join(path, "**", "#{file_or_pattern || "*"}.rb")]
-            match = Dir[File.join(path, file_or_pattern)] if match.empty?
-            files = match.collect{|x| x.inspect}.join " "
+            match = Dir[File.join(path, file_or_pattern)] if match.empty? && !file_or_pattern.nil?
+            match.reject!{|x| x.include? "test/integration/suit/"}
 
-            section    = path.match(/suit\/([^\/]*)\//).captures[0].capitalize.gsub "-", " "
-            files_desc = match.size == 1 ?
-                           match.first.gsub(path, "") :
-                           "#{file_or_pattern.nil? ? "All" : "Multiple"} tests"
+            unless match.empty?
+              files = match.collect{|x| x.inspect}.join " "
 
-            buffer.log     "#{section} - #{files_desc}"
-            buffer.execute "ruby #{loader} #{"-I" if match.size > 1}#{files}"
-            buffer.execute "suit restore"
+              section    = path.match(/suit\/([^\/]*)\//).captures[0].capitalize.gsub "-", " "
+              files_desc = match.size == 1 ?
+                             match.first.gsub(path, "") :
+                             "#{file_or_pattern.nil? ? "All" : "Multiple"} tests"
+
+              buffer.log     "#{section} - #{files_desc}"
+              buffer.execute "ruby #{loader} #{"-I" if match.size > 1}#{files}"
+              buffer.execute "suit restore"
+            end
           end
 
           data = IOBuffer.capture do |buffer|
             if options.rails_versions == ["0"]
-              proc.call buffer, "suit/shared/test/unit/"
+              proc.call buffer, "suit/shared/test/#{type}/"
             else
               (options.rails_versions || major_rails_versions).each do |rails_version|
-                proc.call buffer, "suit/rails-#{rails_version}/dummy/test/unit/"
+                proc.call buffer, "suit/rails-#{rails_version}/dummy/test/#{type}/"
               end
             end
           end
 
-          print_test_results "Unit", data
+          print_test_results type.to_s.capitalize, data
         end
-
-      private
 
         def files(action)
           assert_suit_dir
