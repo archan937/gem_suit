@@ -128,10 +128,15 @@ module GemSuit
 
     desc "bundle", "Run `bundle install` (should be invoked from a Rails dummy application) only when necessary (used for testing)"
     def bundle
-      assert_rails_dir
-      if `bundle check`.any?{|line| line.include? "`bundle install`"}
-        puts "Running `bundle install` (this can take several minutes...)".yellow
-        system "bundle install"
+      raise Error, "Current directory path does not match either a GemSuit directory or a Rails dummy app. Quitting." unless suit_dir? || rails_dir?
+
+      dirs = [File.expand_path("")]
+      dirs.concat Dir["suit/rails-*/dummy"] if suit_dir?
+      dirs.each do |dir|
+        if `cd #{dir} && bundle check`.any?{|line| line.include? "`bundle install`"}
+          puts "Running `bundle install` (this can take several minutes...)".yellow
+          system "cd #{dir} && bundle install"
+        end
       end
     end
 

@@ -30,25 +30,37 @@ module GemSuit
         private
 
           def assert_gem_dir(non_gemsuit = false)
-            if Dir["*.gemspec"].empty?
+            unless gem_dir?
               raise Error, "Missing *.gemspec in current directory. Is this really a gem directory?"
             end
-            if non_gemsuit && !Dir[".suit"].empty?
+            if non_gemsuit && suit_dir?
               raise Error, "Found .suit in current directory. Is this gem already provided with GemSuit?"
             end
           end
 
           def assert_suit_dir
             assert_gem_dir
-            if Dir[".suit"].empty?
+            unless suit_dir?
               raise Error, "Missing .suit in current directory. Is this really a GemSuit directory?"
             end
           end
 
           def assert_rails_dir
-            unless File.expand_path("").match /suit\/rails-\d\/dummy$/
+            unless rails_dir?
               raise Error, "Current directory path does not match \"/suit/rails-{2,3}/dummy\". Is this really a GemSuit dummy app?"
             end
+          end
+
+          def gem_dir?
+            !Dir["*.gemspec"].empty?
+          end
+
+          def suit_dir?
+            gem_dir? && !Dir[".suit"].empty?
+          end
+
+          def rails_dir?
+            !!File.expand_path("").match(/suit\/rails-\d\/dummy$/)
           end
 
           def major_rails_versions
