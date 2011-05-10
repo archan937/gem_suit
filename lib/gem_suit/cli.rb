@@ -133,7 +133,7 @@ module GemSuit
       dirs = [File.expand_path("")]
       dirs.concat Dir["suit/rails-*/dummy"] if suit_dir?
       dirs.each do |dir|
-        if `cd #{dir} && bundle check`.any?{|line| line.include? "`bundle install`"}
+        if [`cd #{dir} && bundle check`].flatten.any?{|line| line.include? "`bundle install`"}
           puts "Running `bundle install` (this can take several minutes...)".yellow
           system "cd #{dir} && bundle install"
         end

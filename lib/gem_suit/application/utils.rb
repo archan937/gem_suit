@@ -38,7 +38,7 @@ module GemSuit
         end
 
         def bundle_install?
-          `cd #{root_path} && bundle check`.any?{|line| line.include? "`bundle install`"}
+          [`cd #{root_path} && bundle check`].flatten.any?{|line| line.include? "`bundle install`"}
         end
 
         def validate_root_path!(path)
