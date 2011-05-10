@@ -1,5 +1,10 @@
 = GemSuit CHANGELOG
 
+== Version 0.1.2 (May 11, 2011)
+
+* Made GemSuit Ruby 1.9.2 compatible
+* Using Rails v3.0.7 as latest version
+
 == Version 0.1.1 (April 23, 2011)
 
 * Added suit test {functional,integration,all}
