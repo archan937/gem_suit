@@ -3,6 +3,7 @@
 == Version 0.1.3 (May 15, 2011)
 
 * Solved running suit tests within command line when using Ruby 1.9.2
+* Corrected matching test summaries within Ruby 1.9.2
 * Using Rich-Support v0.1.2
 
 == Version 0.1.2 (May 11, 2011)
