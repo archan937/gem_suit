@@ -17,6 +17,18 @@ module GemSuit
           test_suit
         end
 
+        def test_unit(file_or_pattern = nil)
+          run_tests :unit, file_or_pattern
+        end
+
+        def test_functional(file_or_pattern = nil)
+          run_tests :functional, file_or_pattern
+        end
+
+        def test_integration(file_or_pattern = nil)
+          run_tests :integration, file_or_pattern
+        end
+
         def test_suit(file_or_pattern = nil)
           assert_suit_dir
 
@@ -33,18 +45,6 @@ module GemSuit
           end
 
           print_test_results "Suit", data
-        end
-
-        def test_unit(file_or_pattern = nil)
-          run_tests :unit, file_or_pattern
-        end
-
-        def test_functional(file_or_pattern = nil)
-          run_tests :functional, file_or_pattern
-        end
-
-        def test_integration(file_or_pattern = nil)
-          run_tests :integration, file_or_pattern
         end
 
       private
