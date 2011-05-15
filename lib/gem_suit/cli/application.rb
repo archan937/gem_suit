@@ -123,7 +123,7 @@ module GemSuit
         LOAD_MATCH           = /^Loaded suite suit\/rails-(\d+)\/dummy\/test\/integration\/suit\/(.*)$/
         GEM_SUIT_MATCH       = /^GemSuit: (.*)$/
         TIME_MATCH           = /^Finished in (.*)\.$/
-        SUMMARY_MATCH        = /^(\d+) (\w+), (\d+) (\w+), (\d+) (\w+), (\d+) (\w+)$/
+        SUMMARY_MATCH        = /^(\d+ \w+(, )?)+$/
 
         def print_test_results(section, data)
           return if (suit_tests = extract_test_results(data)).empty?
@@ -159,11 +159,11 @@ module GemSuit
                 result.last[:time] = $1
               end
               if line.match(SUMMARY_MATCH)
-                result.last[:summary ] = line
-                result.last[$2.to_sym] = $1
-                result.last[$4.to_sym] = $3
-                result.last[$6.to_sym] = $5
-                result.last[$8.to_sym] = $7
+                result.last[:summary] = line
+                line.scan(/\d+ \w+/).each do |match|
+                  amount, type = match.split " "
+                  result.last[type.to_sym] = amount
+                end
                 result << {}
               end
             end
