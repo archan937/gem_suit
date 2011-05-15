@@ -97,12 +97,12 @@ h3. Making your gem development mobile
 
 It is possible that you will have to develop your gem on another computer or that there are multiple developers (and thus coping with different computers). As mentioned in the previous section, everything is added to the Git repository. The only pitfall can be that the computer is not prepped for the gem development. Think of not having all the gem dependecies installed.
 
-Just check out the gem Git repository and "fit the GemSuit" with @suit fit@. With "Rich-CMS":https://github.com/archan937/rich_cms/tree/edge as example, run the following:
+Just check out the gem Git repository, install GemSuit and "fit the GemSuit" with @suit fit@. With "Rich-CMS":https://github.com/archan937/rich_cms/tree/edge as example, run the following:
 
 <pre>
   $ git clone https://github.com/archan937/rich_cms.git
   $ cd rich_cms
-  $ suit fit -v
+  $ gem install gem_suit && suit fit -v
 </pre>
 
 h2. Testing with GemSuit
