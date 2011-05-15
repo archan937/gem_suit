@@ -111,7 +111,7 @@ module GemSuit
     desc "test [SECTION] [FILES]", "Run GemSuit (suit, unit, functional, integration) tests"
     method_options [:rails_versions, "-r"] => :array, [:verbose, "-v"] => false, [:very_verbose, "-w"] => false
     def test(section = "suit", file_or_pattern = nil)
-      if Application::InstanceMethods.instance_methods.include?(method = "test_#{section}")
+      if Application::InstanceMethods.instance_methods.collect(&:to_s).include?(method = "test_#{section}")
         send method, file_or_pattern
       elsif file_or_pattern.nil?
         test_suit section
